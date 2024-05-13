@@ -31,7 +31,7 @@ begin
 		set w_sai_rais=null;
 
 		-- BTHSC-56554 / Ajuste no tipo do evento
-		if w_TpCategoria = 'P' then
+		if w_TpCategoria  in ('P', 'V') then
 			set w_tipo_pd = 'P'
 		else
 			set w_tipo_pd = 'D';
@@ -130,4 +130,5 @@ on existing skip   SELECT
 FROM gp001_verba v
 LEFT JOIN tecbth_delivery.evento_aux d on d.evento = v.CdVerba
 where id_cloud is not null and nat_rubrica <>0
+
 
