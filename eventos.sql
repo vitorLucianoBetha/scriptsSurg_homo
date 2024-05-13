@@ -30,6 +30,7 @@ begin
 		set w_unidade=null;
 		set w_sai_rais=null;
 
+		-- BTHSC-56554 / Ajuste no tipo do evento
 		if w_TpCategoria = 'P' then
 			set w_tipo_pd = 'P'
 		else
