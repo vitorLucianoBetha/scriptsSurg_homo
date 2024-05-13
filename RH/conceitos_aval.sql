@@ -1,0 +1,1 @@
+insert into bethadba.conceitos values(1, 'Conceitos - 1', 0, 140, 140)
