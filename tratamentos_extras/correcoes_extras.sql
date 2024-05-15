@@ -703,3 +703,11 @@ SET hs.i_niveis = CASE
 end
 
 WHERE hs.i_funcionarios = 180432
+
+
+update bethadba.hist_cargos_cadastro hc 
+left join tecbth_delivery.cargo c 
+on hc.i_cargos = c.cdCargo 
+left JOIN bethadba.atos a 
+on a.num_ato = c.nrLeiCargo 
+set hc.i_atos = a.i_atos 

@@ -21,13 +21,14 @@ begin
 	declare w_cdestruturasalarial integer;
 	declare w_cdgrupofaixasalarial integer;
 	declare w_dt_alteracoes_aux datetime;
+	declare w_dedic_exclu char(50);
 	
 	// ***** bethadba.hist_cargos_compl
 	declare w_i_config_ferias_subst smallint;
 	--BUG BTHSC-7633
 	ooLoop: for oo as cnv_cargos dynamic scroll cursor for
 	-- BUG NOME CARGO BTHSC-7894
-		select 1 as w_i_entidades,gp001_CARGO.CdCargo as w_i_cargos,cdGrupoCboCargo as w_cdGrupoCboCargo,cdCboCargo as w_cdCboCargo,TpCargo as w_TpCargo,w_i_cargos || ' - ' ||  upper(DsCargo) as w_nome,isnull((select  first qt_vagas from tecbth_delivery.gp001_QUADRO_VAGAS WHERE gp001_CARGO.cdcargo = gp001_QUADRO_VAGAS.idf_cargo 
+		select 1 as w_i_entidades,gp001_CARGO.CdCargo as w_i_cargos,cdGrupoCboCargo as w_cdGrupoCboCargo,cdCboCargo as w_cdCboCargo, dedicExcl as w_dedic_exclu,TpCargo as w_TpCargo,w_i_cargos || ' - ' ||  upper(DsCargo) as w_nome,isnull((select  first qt_vagas from tecbth_delivery.gp001_QUADRO_VAGAS WHERE gp001_CARGO.cdcargo = gp001_QUADRO_VAGAS.idf_cargo 
 ),1) as w_vagas_acresc,
 			isnull((select  first qt_vagas from tecbth_delivery.gp001_QUADRO_VAGAS WHERE gp001_CARGO.cdcargo = gp001_QUADRO_VAGAS.idf_cargo 
 ),1) as w_qtd_vagas,date(DtLeiCargo) as w_dt_lei,date(DtLeiCargo) as w_dt_vigorar,NrLeiCargo as w_num_lei,CdTribunal as w_CdTribunal,DtDesativacao as w_dt_leii,
@@ -69,6 +70,12 @@ begin
 		
 		if(w_i_cbo = '000000') or(trim(w_i_cbo) = '') then
 			set w_i_cbo=null
+		end if;
+
+		if w_dedic_exclu in(30001) then 
+			set w_dedic_exclu = 'S'
+			else 
+			set w_dedic_exclu= 'N'
 		end if;
 		
 		if not exists(select 1 from bethadba.cbo where i_cbo = w_i_cbo) then
@@ -138,8 +145,8 @@ begin
 			values (w_i_entidades,w_i_cargos,w_dt_alteracoes,3,null,w_dt_leii,w_dt_vigorarr,w_vagas_acresc,null) 
 		end if;
 		
-		insert into bethadba.hist_cargos_cadastro(i_entidades,i_cargos,i_competencias, codigo_esocial, nome, i_tipos_cargos, aposent_especial, acumula_cargos)on existing skip
-		values (w_i_entidades,w_i_cargos, '1950-01-01', w_i_cargos, w_nome, w_i_tipos_cargos, 0, 'N');
+		insert into bethadba.hist_cargos_cadastro(i_entidades,i_cargos,i_competencias, codigo_esocial, nome, i_tipos_cargos, aposent_especial, acumula_cargos, dedicacao_exclusiva)on existing skip
+		values (w_i_entidades,w_i_cargos, '1950-01-01', w_i_cargos, w_nome, w_i_tipos_cargos, 0, 'N', w_dedic_exclu);
 		
 		
 		set w_dt_alteracoes_aux = w_dt_alteracoes;

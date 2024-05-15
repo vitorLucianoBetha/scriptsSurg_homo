@@ -1,3 +1,5 @@
+inicioVigencia =  (select mc.dt_alteracoes  from bethadba.mov_cargos mc where mc.i_cargos = cargos.i_cargos),
+
 INSERT INTO folharh.bethadba.tabelas
 (i_tabelas, dt_vigencia_ini, dt_vigencia_fin, vlr_sal_min, vlr_dependente, vlr_min_irrf, vlr_piso_sal, vlr_min_prev_est, vlr_max_prev_est, vlr_sal_fam_est, vlr_sal_fam_apos, vlr_sal_fam_esp, vlr_teto_salarial, perc_sest_autonomo, perc_senat_autonomo, i_atos, vlr_deducao_simplificada, vlr_parcela_isenta)
 VALUES(1, '1992-01-01', '1992-01-01', 96.03, 23.82, 1.00, 110.38, 0.00, 99999.99, 3.67, 3.67, 0.00, 0.00, NULL, NULL, NULL, NULL, 597.06);

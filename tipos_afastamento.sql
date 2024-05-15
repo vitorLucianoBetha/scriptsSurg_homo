@@ -4,8 +4,10 @@
 --BUG BTHSC-8050 Concatenar código do afastamento do banco concorrente com o nome do afastamento no concorrente
 
 insert into bethadba.tipos_afast(i_tipos_afast,i_tipos_movpes,descricao,classif,perde_temposerv,busca_var,dias_prev)on existing skip
-select number(*)+21,null,cdAfastamento||' - '||DsAfastamento,1,'','',null 
+select number(*)+46,null,cdAfastamento||' - '||DsAfastamento,1,'N','N',null 
 from tecbth_delivery.gp001_motivoafastamento 
+
+
 --BUG BTHSC-6966
 --where cdAfastamento in(6,7,8,9)
 ;
