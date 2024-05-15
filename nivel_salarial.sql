@@ -3,7 +3,7 @@ begin
   declare cur_conver dynamic scroll cursor for select 1,t1.cdFaixaSalarial,
       t1.cdFaixaSalarial,t1.vlFaixaSalarial,number(*) AS CODIGO from
       gp001_salariofaixa  as t1,  gp001_salariofaixa as t2 where
-      --t1.NrNivelSalarial in(2,3) and  BUG -- BTHSC-8177 Não migrou todos os níveis salariais
+     -t1.NrNivelSalarial in(2,3) and  
       substr(t1.CdFaixaSalarial,1,5)  = t2.cdFaixaSalarial 
      order by 1 asc,2 asc;
 
