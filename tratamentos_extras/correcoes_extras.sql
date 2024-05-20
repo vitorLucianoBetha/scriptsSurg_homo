@@ -706,7 +706,7 @@ WHERE hs.i_funcionarios = 180432
 
 
 update bethadba.hist_cargos_cadastro hc 
-left join tecbth_delivery.cargo c 
+left join tecbth_delivery.gp001_cargo c 
 on hc.i_cargos = c.cdCargo 
 left JOIN bethadba.atos a 
 on a.num_ato = c.nrLeiCargo 
