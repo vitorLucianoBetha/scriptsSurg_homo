@@ -170,13 +170,14 @@ select top 1  1,'2023-05-01',1,(select i_pessoas from bethadba.pessoas where nom
 /*
 update bethadba.hist_entidades_compl 
 set reg_eletronico_empregados = 0,
-situacao_entidade = 1,
+situacao_entidade = 0,
 entidade_possui_rpps = 'N',
 tipo_entidade = 1,
 indicativo_entidade_educativa = 'S',
 entidade_gestora_rpps = 'N',
 entidade_regime_prev_compl = 'N'
 update bethadba.hist_tipos_adm set vlr_sub_teto = 50000
+update bethadba.hist_parametros_previd set classificacao_tributaria = 99
 
 		
 INSERT INTO Folharh.bethadba.hist_parametros_previd

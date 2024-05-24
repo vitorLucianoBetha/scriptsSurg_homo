@@ -28,7 +28,7 @@ begin
 	--BUG BTHSC-7633
 	ooLoop: for oo as cnv_cargos dynamic scroll cursor for
 	-- BUG NOME CARGO BTHSC-7894
-		select 1 as w_i_entidades,gp001_CARGO.CdCargo as w_i_cargos,cdGrupoCboCargo as w_cdGrupoCboCargo,cdCboCargo as w_cdCboCargo, dedicExcl as w_dedic_exclu,TpCargo as w_TpCargo,w_i_cargos || ' - ' ||  upper(DsCargo) as w_nome,isnull((select  first qt_vagas from tecbth_delivery.gp001_QUADRO_VAGAS WHERE gp001_CARGO.cdcargo = gp001_QUADRO_VAGAS.idf_cargo 
+		select 1 as w_i_entidades,gp001_CARGO.CdCargo as w_i_cargos,cdGrupoCboCargo as w_cdGrupoCboCargo,cdCboCargo as w_cdCboCargo, dedicExcl,TpCargo as w_TpCargo,w_i_cargos || ' - ' ||  upper(DsCargo) as w_nome,isnull((select  first qt_vagas from tecbth_delivery.gp001_QUADRO_VAGAS WHERE gp001_CARGO.cdcargo = gp001_QUADRO_VAGAS.idf_cargo 
 ),1) as w_vagas_acresc,
 			isnull((select  first qt_vagas from tecbth_delivery.gp001_QUADRO_VAGAS WHERE gp001_CARGO.cdcargo = gp001_QUADRO_VAGAS.idf_cargo 
 ),1) as w_qtd_vagas,date(DtLeiCargo) as w_dt_lei,date(DtLeiCargo) as w_dt_vigorar,NrLeiCargo as w_num_lei,CdTribunal as w_CdTribunal,DtDesativacao as w_dt_leii,
@@ -68,11 +68,9 @@ begin
 		--BUG BTHSC-7614
 		set w_i_cbo=string(w_cdGrupoCboCargo);
 		
-		if(w_i_cbo = '000000') or(trim(w_i_cbo) = '') then
-			set w_i_cbo=null
-		end if;
+		
 
-		if w_dedic_exclu in(30001) then 
+		if w_dedic_exclu in('30001') then 
 			set w_dedic_exclu = 'S'
 			else 
 			set w_dedic_exclu= 'N'
@@ -146,7 +144,7 @@ begin
 		end if;
 		
 		insert into bethadba.hist_cargos_cadastro(i_entidades,i_cargos,i_competencias, codigo_esocial, nome, i_tipos_cargos, aposent_especial, acumula_cargos, dedicacao_exclusiva)on existing skip
-		values (w_i_entidades,w_i_cargos, '1950-01-01', w_i_cargos, w_nome, w_i_tipos_cargos, 0, 'N', w_dedic_exclu);
+		values (w_i_entidades,w_i_cargos, w_dt_alteracoes, w_i_cargos, w_nome, w_i_tipos_cargos, 0, 'N', w_dedic_exclu);
 		
 		
 		set w_dt_alteracoes_aux = w_dt_alteracoes;
@@ -154,3 +152,25 @@ begin
 	end for;
 end
 ;
+
+update bethadba.hist_cargos_cadastro hc 
+left join tecbth_delivery.gp001_cargo c 
+on hc.i_cargos = c.cdCargo 
+left JOIN bethadba.atos a 
+on a.num_ato = c.nrLeiCargo 
+set hc.i_atos = a.i_atos
+
+
+update bethadba.cargos c 
+left join tecbth_delivery.gp001_CARGO c1 
+on c.i_cargos = c1.CdCargo 
+set c.i_cbo = c1.cdGrupoCboCargo 
+where c.i_cbo is null
+
+
+update bethadba.hist_cargos_cadastro c 
+left join tecbth_delivery.gp001_CARGO c1 
+on c.i_cargos = c1.CdCargo 
+set c.i_cbo = c1.cdGrupoCboCargo 
+where c.i_cbo is null
+commit;
