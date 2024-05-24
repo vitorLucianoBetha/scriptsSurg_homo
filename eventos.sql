@@ -87,12 +87,6 @@ commit
 ;
 
 
--- Ajuste no código dos eventos do tipo F devido ao check constraint ASA4364
-update evento_aux
-set i_eventos = 1000 + number() 
-where tipo_pd = 'F'
-and i_eventos is null
-;
 
 if  exists (select 1 from sys.sysprocedure where creator = (select user_id from sys.sysuserperms where user_name = current user) and proc_name = 'cnv_eventos') then
 	drop procedure cnv_eventos;

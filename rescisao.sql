@@ -4,7 +4,7 @@ begin
 	declare w_i_funcionarios integer;
 	declare w_i_motivos_resc smallint;
 	declare w_i_motivos_apos smallint;
-	declare w_dt_aviso date;
+	declare w_dt_aviso date; 
 
 	ooLoop: for oo as cnv_rescisoes dynamic scroll cursor for
 		select 1 as w_i_entidades,CdMatricula as w_cdMatricula,SqContrato as w_SqContrato,CdDesligamento as w_CdDesligamento,date(DtRescisao) as w_dt_rescisao,DtAvisoPrevio as w_DtAvisoPrevio

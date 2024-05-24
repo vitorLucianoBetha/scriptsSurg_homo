@@ -695,11 +695,7 @@ ON (hs.i_funcionarios = hs2.CdMatricula and  date(hs.dt_alteracoes) = date(hs2.D
 SET hs.i_niveis = CASE 
                      WHEN hs2.nrNivelCargo = 0 THEN NULL 
                      ELSE hs2.nrNivelCargo 
-                  END,
-                  salario = case
-	when hs2.vlSalarioFaixa = 0 then hs2.VlSalario
-	when hs2.VlSalario = 0 then hs2.VlSalarioFaixa
-	else 1
+                  END
 end
 
 WHERE hs.i_funcionarios = 180432

@@ -84,11 +84,6 @@ END);
 		end if;
 		*/
 		
-		if w_i_vinculos is null then
-			select coalesce(max(i_vinculos),0)+1 
-			into w_i_vinculos 
-			from bethadba.vinculos;
-		end if; 
 		
 		set w_i_motivos_resc=null;
 		set w_i_adicionais=null;

@@ -95,7 +95,6 @@ CALL bethadba.pg_habilitartriggers('off');
 COMMIT;
 commit;
 -- HIST Niveis BUG BTHSC-8182 Não migrou os históricos dos níveis salariais
-ROLLBACK;
 CALL bethadba.dbp_conn_gera(1, 2019, 300);
 CALL bethadba.pg_setoption('wait_for_commit','on');
 call bethadba.pg_setoption('fire_triggers','off');

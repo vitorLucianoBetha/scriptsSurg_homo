@@ -31,7 +31,7 @@ begin
 	set w_number=0;
 	ooLoop: for oo as cnv_hist_cargos dynamic scroll cursor for
 		select 1 as w_i_entidades,Funcionario.cdMatricula as w_cdMatricula,Funcionario.SqContrato as w_SqContrato,dtAdmissao as w_dtAdmissao,if DtHistorico is null then dtAdmissao else DtHistorico endif as w_DtHistorico,
-			cdMotivo as w_i_motivos_altcar,if HistoricoCargo.cdCargo is null then Funcionario.CdCargo else HistoricoCargo.cdCargo endif as w_i_cargos,DtValidade as w_dtValidade,HistoricoCargo.nrConcurso as w_i_concursos,
+			cdMotivo as w_i_motivos_altcar,if HistoricoCargo.cdCargo is null then Funcionario.CdCargo else HistoricoCargo.cdCargo endif as w_i_cargos,DtValidade as w_dtValidade, cast(HistoricoCargo.nrConcurso as integer) as w_i_concursos,
         DtPosseCargo as w_dt_posse,cdtipoferias as w_configferias from tecbth_delivery.GP001_Funcionario as Funcionario
 		left outer join tecbth_delivery.GP001_HistoricoCargo AS HistoricoCargo on (Funcionario.CdMatricula = HistoricoCargo.CdMatricula and Funcionario.SqContrato = HistoricoCargo.SqContrato)
 		order by 1,2,3,5,8 asc		
@@ -130,7 +130,7 @@ begin
 					values (w_i_entidades,w_i_funcionarios,w_dt_alteracoes,null,w_i_cargos,w_i_motivos_altcar,null,w_i_concursos,null,w_dt_posse);
 
                     insert into bethadba.atos_func(i_entidades,i_funcionarios, i_atos_func, i_atos, i_tipos_movpes, manual, dt_movimento)on existing skip 
-			        values (w_i_entidades, w_i_funcionarios, 1, w_i_atos, 1, 'N', null);
+			        values (w_i_entidades, w_i_funcionarios, 1, w_i_atos, 1, 'N', '2024-01-01');
 				end if
 			end if
 		end if;
@@ -141,13 +141,7 @@ begin
 end
 ;
 
---Ajuste no histórico de cargos
-update BETHADBA.HIST_CARGOS 
-set I_MOTIVOS_ALTCAR = 5
-WHERE DT_ALTERACOES <> (SELECT DT_ADMISSAO FROM BETHADBA.FUNCIONARIOS WHERE FUNCIONARIOS.I_ENTIDADES = HIST_CARGOS.I_ENTIDADES AND FUNCIONARIOS.I_FUNCIONARIOS= HIST_CARGOS.I_FUNCIONARIOS)
-AND I_MOTIVOS_ALTCAR  IS NULL;
-commit
-;
+
 
 CALL bethadba.dbp_conn_gera(1, 2019, 300);
 CALL bethadba.pg_setoption('wait_for_commit','on');

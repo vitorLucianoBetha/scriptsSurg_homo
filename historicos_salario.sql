@@ -1,42 +1,45 @@
 begin
   declare cur_conver dynamic scroll cursor for 
     select 1, Funcionario.CdMatricula as w_cdMatricula ,Funcionario.SqContrato,dtAdmissao,
-       Nrdias,NrHorasDia,if DtHistorico is null then dtAdmissao else dtgeracao endif,HistoricoSalarial.cdEstruturaSalarial,HistoricoSalarial.CdGrupoFaixaSalarial,
+       Nrdias,NrHorasDia,if DtHistorico is null then dtAdmissao else dtgeracao endif as w_DtHistorico ,HistoricoSalarial.cdEstruturaSalarial,HistoricoSalarial.CdGrupoFaixaSalarial,
        HistoricoSalarial.NrSequenciaFaixa,cdMotivo,VlSalarioFaixa,VlSalario,dtgravacao,1 
  from  tecbth_delivery.gp001_Funcionario as Funcionario,tecbth_delivery.gp001_HistoricoSalarial as HistoricoSalarial,tecbth_delivery.gp001_Escala as Escala 
 where  Funcionario.CdMatricula *= HistoricoSalarial.CdMatricula 
   and  Funcionario.SqContrato *= HistoricoSalarial.SqContrato 
   and  Funcionario.CdEscalaTrabalho = Escala.CdEscala 
+   
 
 union
 
 select 1,Funcionario.CdMatricula as w_cdMatricula,Funcionario.SqContrato,dtAdmissao,
-	   Nrdias,NrHorasDia,if DtHistorico is null then dtAdmissao else dtgeracao endif,HistoricoSalarial.cdEstruturaSalarial,HistoricoSalarial.CdGrupoFaixaSalarial,
+	   Nrdias,NrHorasDia,if DtHistorico is null then dtAdmissao else dtgeracao endif as w_DtHistorico,HistoricoSalarial.cdEstruturaSalarial,HistoricoSalarial.CdGrupoFaixaSalarial,
 	   HistoricoSalarial.NrSequenciaFaixa,cdMotivo,VlSalarioFaixa,VlSalario,dtgravacao,1 
  from  tecbth_delivery.gp001_Funcionario as Funcionario,tecbth_delivery.gp001_HistoricoSalarial as HistoricoSalarial,tecbth_delivery.gp001_Escala as Escala 
 where  Funcionario.CdMatricula *= HistoricoSalarial.CdMatricula 
   and  Funcionario.SqContrato *= HistoricoSalarial.SqContrato 
   and  Funcionario.CdEscalaTrabalho = Escala.CdEscala 
+   
 
 union
 
 select 1,Funcionario.CdMatricula as w_cdMatricula,Funcionario.SqContrato,dtAdmissao,
-       Nrdias,NrHorasDia,if DtHistorico is null then dtAdmissao else dtgeracao endif,HistoricoSalarial.cdEstruturaSalarial,HistoricoSalarial.CdGrupoFaixaSalarial,
+       Nrdias,NrHorasDia,if DtHistorico is null then dtAdmissao else dtgeracao endif as w_DtHistorico,HistoricoSalarial.cdEstruturaSalarial,HistoricoSalarial.CdGrupoFaixaSalarial,
        HistoricoSalarial.NrSequenciaFaixa,cdMotivo,VlSalarioFaixa,VlSalario,dtgravacao,1 
  from  tecbth_delivery.gp001_Funcionario as Funcionario,tecbth_delivery.gp001_HistoricoSalarial as HistoricoSalarial,tecbth_delivery.gp001_Escala as Escala 
 where  Funcionario.CdMatricula *= HistoricoSalarial.CdMatricula 
   and  Funcionario.SqContrato *= HistoricoSalarial.SqContrato 
   and  Funcionario.CdEscalaTrabalho = Escala.CdEscala 
-
+  
 union
 
 select 1,Funcionario.CdMatricula,Funcionario.SqContrato,dtAdmissao,
-       Nrdias,NrHorasDia,if DtHistorico is null then dtAdmissao else dtgeracao endif,HistoricoSalarial.cdEstruturaSalarial,HistoricoSalarial.CdGrupoFaixaSalarial,
+       Nrdias,NrHorasDia,if DtHistorico is null then dtAdmissao else dtgeracao endif as w_DtHistorico,HistoricoSalarial.cdEstruturaSalarial,HistoricoSalarial.CdGrupoFaixaSalarial,
        HistoricoSalarial.NrSequenciaFaixa,cdMotivo,VlSalarioFaixa,VlSalario,dtgravacao,1 
  from  tecbth_delivery.gp001_Funcionario as Funcionario,tecbth_delivery.gp001_HistoricoSalarial as HistoricoSalarial,tecbth_delivery.gp001_Escala as Escala 
 where  Funcionario.CdMatricula *= HistoricoSalarial.CdMatricula 
   and  Funcionario.SqContrato *= HistoricoSalarial.SqContrato 
   and  Funcionario.CdEscalaTrabalho = Escala.CdEscala 
+   
 order by 1 asc,2 asc,3 asc,7 asc,13 asc;
   // *****  Tabela bethadba.hist_salariais
   declare w_i_entidades integer;
@@ -98,47 +101,28 @@ order by 1 asc,2 asc,3 asc,7 asc,13 asc;
     set w_horas_sem=null;
     // *****  Converte tabela bethadba.hist_salariais
     set w_i_funcionarios=cast(w_cdMatricula as integer);
-    set w_dt_alteracoes=hours("date"(w_DtHistorico),0);
+    set w_dt_alteracoes= w_DtHistorico;
     if w_i_funcionarios_aux <> w_i_funcionarios then
       set w_number=0
     end if;
     set w_number=w_number+1;
-    if w_number = 1 then
-      set w_dt_alteracoes=hours(w_dtAdmissao,0)
-    else
-      if "date"(w_dt_alteracoes) < w_dtAdmissao then
-        set w_dt_alteracoes=hours(w_dtAdmissao,1)
-      else
-        set w_dt_alteracoes=hours("date"(w_DtHistorico),1)
-      end if
-    end if;
-    if w_cdEstruturaSalarial <> 0 then
-      print 'Estrutura: '+string(w_cdEstruturaSalarial)+' Faixa:'+string(w_cdGrupoFaixaSalarial)+' NrSequencialFaixa:'+string(w_NrSequenciaFaixa);
-     set w_i_niveis=null;
-      set w_i_clas_niveis=null;
-      set w_i_referencias=null;
-        if w_i_entidades = 1 then
-        select first cdFaixaSalarial into ws_i_niveis from tecbth_delivery.gp001_salariofaixa where
-          CdGrupoFaixaSalarial = w_CdGrupoFaixaSalarial and
-          NrSequenciaFaixa = w_NrSequenciaFaixa and
-          cdEstruturaSalarial = w_cdEstruturaSalarial     
-        end if;
-        if w_i_entidades = 1 then
-       select first i_niveis into w_i_niveis from bethadba.niveis where
-        i_entidades = w_i_entidades and
-        nome = ws_i_niveis
-        end if;
+
+
  
 
     if not exists(select 1 from bethadba.niveis where i_entidades = w_i_entidades and i_niveis = w_i_niveis) then
       set w_i_niveis=null
     end if;
-    set w_salario=cast(isnull(w_VlSalarioFaixa,0) as decimal(12,2));
+    
+    if w_VlSalarioFaixa = 0 then
+    set w_salario=cast(isnull(w_VlSalario,0) as decimal(12,2))
+    else
+    set w_salario=cast(isnull(w_VlSalarioFaixa,0) as decimal(12,2))
+end if;
     if(w_i_niveis = 0) or(w_i_niveis is null) then
       set w_i_niveis=null;
       set w_i_clas_niveis=null;
       set w_i_referencias=null;
-      set w_salario=cast(isnull(w_VlSalario,0) as decimal(12,2))
     end if;
     set w_i_motivos_altsal=w_cdMotivo;
     if w_i_motivos_altsal = 0 then
@@ -210,13 +194,13 @@ order by 1 asc,2 asc,3 asc,7 asc,13 asc;
           w_dt_alteracoes,w_i_niveis,w_i_clas_niveis,w_i_referencias,w_i_motivos_altsal,w_i_atos,w_salario,w_horas_mes,
           w_horas_sem);
     	end if
-	    end if
-		end if;
+	    end if;
     set w_i_funcionarios_aux=w_i_funcionarios;
 	message 'Ent.: '||w_i_entidades||' Fun.: '||w_i_funcionarios||' Dt.: '||w_i_funcionarios to client;	
   end loop L_item;
   close cur_conver
 end; 
+
 
 
 commit
