@@ -5,26 +5,34 @@ CALL bethadba.pg_setoption('wait_for_commit', 'on');
 CALL bethadba.pg_habilitartriggers('off');
 COMMIT;
 
-if not exists (select 1 from sys.syscolumns where creator = current user  and tname = 'GP001_lotacao' and cname = 'i_config_organ') then 
-	alter table GP001_lotacao add(i_config_organ integer, nivel1 char(2), nivel2 char(2),nivel3 char(3) );
+-- BTHSC-59216 - ajustes de niveis - André
+
+if not exists (select 1 from sys.syscolumns where creator = current user  and tname = 'tecbth_delivery.gp001_LOTACAO' and cname = 'i_config_organ') then 
+	alter table tecbth_delivery.gp001_LOTACAO add(i_config_organ integer null, nivel1 char(1) null, nivel2 char(2) null,nivel3 char(3) null, nivel4 char(5) null );
 end if
 ;
 
-update GP001_lotacao 
-set nivel1 = substr(cdlotacao,1,2), 
-    nivel2 = if trim(substr(cdlotacao,3,2)) = '' then 
-				'00' 
+update tecbth_delivery.gp001_LOTACAO 
+set nivel1 = substr(cdlotacao,1,1), 
+    nivel2 = if trim(substr(cdlotacao,2,1)) = '' then 
+				'0' 
 			else 
-				substr(cdlotacao,3,2) 
+				substr(cdlotacao,2,1) 
 			endif,
-    nivel3 = if trim(substr(cdlotacao,5,2)) = '' then 
+    nivel3 = if trim(substr(cdlotacao,3,1)) = '' then 
+				'0' 
+			else 
+				substr(cdlotacao,3,1) 
+			endif, 
+	nivel4 = if trim(substr(cdlotacao,4,2)) = '' then 
 				'00' 
 			else 
-				substr(cdlotacao,5,2) 
-			endif 
+				substr(cdlotacao,4,2) 
+			endif 		
 ;
 commit
 ;	
+
 
 if  exists (select 1 from sys.sysprocedure where creator = (select user_id from sys.sysuserperms where user_name = current user) and proc_name = 'cnv_organogramas') then
 	drop procedure cnv_organogramas;
@@ -42,9 +50,18 @@ begin
 	declare w_nivel_tipo integer;
 	
 	ooLoop: for oo as cnv_organogramas dynamic scroll cursor for
-		select 1 as w_i_entidades,CdOrganograma as w_CdOrganograma,CdLotacao as w_CdLotacao,NmLotacao as w_descricao,NrNivel as w_nivel,nivel1 as w_nivel1,nivel2 as w_nivel2,nivel3 as w_nivel3 
-		 from tecbth_delivery.GP001_lotacao 
-		order by 1,2,3 asc	
+		select 1 as w_i_entidades,
+			CdOrganograma as w_CdOrganograma,
+			CdLotacao as w_CdLotacao,
+			NmLotacao as w_descricao,
+			sgLotacao as w_sigla,
+			NrNivel as w_nivel,
+			nivel1 as w_nivel1,
+			nivel2 as w_nivel2,
+			nivel3 as w_nivel3,
+			nivel4 as w_nivel4
+		from tecbth_delivery.GP001_lotacao 
+		order by 1,2,3 asc
 	do
 		// *****  Inicializa Variaveis
 		set w_i_config_organ=null;
@@ -60,9 +77,9 @@ begin
 		where i_config_organ = w_i_config_organ;
 		
 		if length(w_CdLotacao) < w_digitos then
-			set w_i_organogramas=string(w_nivel1)+string(w_nivel2)+string(w_nivel3) 
+			set w_i_organogramas=string(w_nivel1)+string(w_nivel2)+string(w_nivel3)+string(w_nivel4)  
 		else
-			set w_i_organogramas=string(w_nivel1)+string(w_nivel2)+string(w_nivel3) 
+			set w_i_organogramas=string(w_nivel1)+string(w_nivel2)+string(w_nivel3)+string(w_nivel4)
 		end if;
 		
 		if w_nivel = 1 then
@@ -84,8 +101,8 @@ begin
 		
 		message 'Org.: '||w_i_organogramas||' Con.: '||w_i_config_organ||' Des.: '||w_descricao||' Niv.: '||w_nivel to client;
 		
-		insert into bethadba.organogramas(i_config_organ,i_organogramas,i_ruas,i_bairros,descricao,nivel,tipo,cnpj,numero,complemento,cep,codigo_tce)on existing skip
-		values (w_i_config_organ,w_i_organogramas,null,null,w_descricao,w_nivel,w_tipo,null,null,null,null,null);
+		insert into bethadba.organogramas(i_config_organ,i_organogramas,i_ruas,i_bairros,descricao,sigla,nivel,tipo,cnpj,numero,complemento,cep,codigo_tce)on existing skip
+		values (w_i_config_organ,w_i_organogramas,null,null,w_descricao,w_sigla,w_nivel,w_tipo,null,null,null,null,null);
 		
 	end for;
 end
