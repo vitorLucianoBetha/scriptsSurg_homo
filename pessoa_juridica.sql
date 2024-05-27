@@ -14,10 +14,19 @@ begin
 	declare w_i_ruas integer;
 	
 	ooLoop: for oo as cnv_sindicados dynamic scroll cursor for
-		select 1 as w_i_entidades,cdSindicato as w_cdSindicato,upper(DsSindicato) as w_nome,DsEndereco as w_nome_rua,CdCep as w_cep,DsComplemento as w_complemento,string(cast(NrCgc as decimal(15))) as w_cnpj,
-	           (CdUf*100000)+cdMunicipio as w_i_cidades,CdBairro as w_i_bairros,NrEndereco as w_numero,CdLogradouro as w_CdLogradouro
+		select 1 as w_i_entidades,
+			cdSindicato as w_cdSindicato,
+			upper(DsSindicato) as w_nome,
+			DsEndereco as w_nome_rua,
+			CdCep as w_cep,
+			DsComplemento as w_complemento,
+			string(cast(NrCgc as decimal(15))) as w_cnpj,
+	    	cast((CdUf*100000)+cdMunicipio as int) as w_i_cidades,
+	        CdBairro as w_i_bairros,
+	        NrEndereco as w_numero,
+	        CdLogradouro as w_CdLogradouro
 		from tecbth_delivery.gp001_sindicato
-		order by 1,2,3 asc	
+		order by 1,2,3 asc
 	do
 		// *****  Tabela bethadba.pessoas
 		set w_i_pessoas = null;
@@ -60,16 +69,15 @@ begin
 			from antes_depois 
 			where tipo = 'B' 
 			and antes_1 = w_i_entidades 
-			and antes_1 = w_i_cidades 
+			and antes_2 = w_i_cidades 
 			and antes_3 = w_i_bairros
 		else
 			select depois_1 
 			into w_i_ruas 
 			from antes_depois 
 			where tipo = 'R' 
-			and antes_1 = w_i_entidades 
-			and antes_2 = w_i_cidades 
-			and antes_3 = w_CdLogradouro;
+			and antes_1 = w_i_cidades 
+			and antes_2 = w_CdLogradouro;
 			
 			select first i_bairros 
 			into w_i_bairros 

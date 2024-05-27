@@ -23,7 +23,7 @@ begin
 		select 1 as w_i_entidades,Agencia.NrBanco as w_i_bancos,Agencia.NrAgencia as w_i_agencias,trim(Agencia.NmAgencia) as w_nome,
 			   trim(EnderecoAgencia.DsEndereco) as w_nome_rua,trim(EnderecoAgencia.DsComplemento) as w_complemento,EnderecoAgencia.CdLogradouro as w_CdLogradouro,EnderecoAgencia.cdUF as w_cdUF,
 			   EnderecoAgencia.cdBairro as w_cdBairro,(EnderecoAgencia.cdUF *100000)+EnderecoAgencia.CdMunicipio as w_i_cidades,EnderecoAgencia.CdMunicipio as w_CdMunicipio, Agencia.dgagencia as w_dgagencia
-		from tecbth_delivery.gp001_Agencia as Agencia,tecbth_delivery.gp001_EnderecoAgencia as EnderecoAgencia
+		from tecbth_delivery.gp001_AGENCIA as Agencia,tecbth_delivery.gp001_EnderecoAgencia as EnderecoAgencia
 		where Agencia.NrBanco = EnderecoAgencia.NrBanco 
 		and Agencia.NrAgencia = EnderecoAgencia.NrAgencia  
 		order by 1,2,3 asc	
@@ -79,9 +79,8 @@ begin
 			into w_i_ruas 
 			from antes_depois 
 			where tipo = 'R' 
-			and antes_1 = w_i_entidades 
-			and antes_2 = w_i_cidades 
-			and antes_3 = w_CdLogradouro
+			and antes_1 = w_i_cidades 
+			and antes_2 = w_CdLogradouro
 		end if;
 		
 		// *****  Converte tabela bethadba.agencias
@@ -89,6 +88,8 @@ begin
 			set w_i_bancos = 1
 		elseif w_i_bancos in(27) then
 			set w_i_bancos = 27
+		elseif w_i_bancos in(38) then
+			set w_i_bancos = 37	
 		elseif w_i_bancos in(104) then
 			set w_i_bancos = 104
 		elseif w_i_bancos in(237) then

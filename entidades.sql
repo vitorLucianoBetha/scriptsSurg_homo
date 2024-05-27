@@ -3,17 +3,30 @@ if  exists (select 1 from sys.sysprocedure where creator = (select user_id from 
 end if
 ;
 
-
 begin
 	// *****  Tabela bethadba.Entidades
 	declare w_i_ruas integer;
 	declare w_cnpj char(14);
 		
 	ooLoop: for oo as cnv_entidades dynamic scroll cursor for
-		select 1 as w_i_entidades,Filial.CdLogradouro as w_CdLogradouro,trim(EnderecoFilial.DsEndereco) as w_nome_rua,coalesce(EnderecoFilial.CdBairro,0) as w_i_bairros,
-			   cast(CdUF||cast(cdMunicipio as integer) as integer) as w_i_cidades,Empresa.CdNaturezaJuridica as w_i_naturezas,trim(RolEmpresas.NaEmpresa) as w_apelido,EnderecoFilial.CdCep as w_cep,
-			   Filial.NrEndereco as w_numero,Filial.DsComplemento as w_complemento,substr(NrFone,1,2) as w_ddd,substr(NrFone,3,8) as w_telefone,substr(NrFoneFax,3,8)as w_fax,lower(Filial.Email) as w_email,
-			   fu_tirachars(Empresa.NrInscricao,'.') as w_NrInscricao,Empresa.CnaePreponderante as w_i_cnae,Filial.NrBancoContaFGTS as w_i_bancos,Filial.NrAgenciaContaFGTS as w_i_agencias
+		select 1 as w_i_entidades,
+			Filial.CdLogradouro as w_CdLogradouro,
+			trim(EnderecoFilial.DsEndereco) as w_nome_rua,
+			coalesce(EnderecoFilial.CdBairro,0) as w_i_bairros,
+			(CdUF *100000) + (cdMunicipio) as w_i_cidades,
+			Empresa.CdNaturezaJuridica as w_i_naturezas,
+			trim(RolEmpresas.NaEmpresa) as w_apelido,
+			EnderecoFilial.CdCep as w_cep,
+			Filial.NrEndereco as w_numero,
+			Filial.DsComplemento as w_complemento,
+			substr(NrFone,1,2) as w_ddd,
+			substr(NrFone,3,8) as w_telefone,
+			substr(NrFoneFax,3,8)as w_fax,
+			lower(Filial.Email) as w_email,
+			tecbth_delivery.fu_tirachars(Empresa.NrInscricao,'.') as w_NrInscricao,
+			Empresa.CnaePreponderante as w_i_cnae,
+			Filial.NrBancoContaFGTS as w_i_bancos,
+			Filial.NrAgenciaContaFGTS as w_i_agencias
 		from tecbth_delivery.gp001_RolEmpresas as RolEmpresas,tecbth_delivery.gp001_Empresa as Empresa,tecbth_delivery.gp001_Filial as Filial,tecbth_delivery.gp001_EnderecoFilial as EnderecoFilial 
 		where RolEmpresas.CdEmpresa = Empresa.CdEmpresa 
 		and Empresa.CdFilial = Filial.CdFilial 
@@ -61,14 +74,13 @@ begin
 					where trim(nome) = trim(w_nome_rua)
 				end if
 			end if
-		else
+		else	
 			select depois_1 
 			into w_i_ruas 
-			from antes_depois 
+			from tecbth_delivery.antes_depois 
 			where tipo = 'R' 
-			and antes_1 = w_i_entidades 
-			and antes_2 = w_i_cidades 
-			and antes_3 = w_CdLogradouro;
+			and antes_1 = w_i_cidades 
+			and antes_2 = w_CdLogradouro;
 
 			select i_bairros 
 			into w_i_bairros 
@@ -90,7 +102,7 @@ begin
 		else
 			set w_cnpj=string(cast(w_NrInscricao as decimal(14)))
 		end if;*/
-	set w_cnpj=string(cast(w_NrInscricao as decimal(14))) ; --w_cnpj = '80637424000109';
+		set w_cnpj=string(cast(left(w_NrInscricao,14) as decimal(14))) ; --w_cnpj = '80637424000109';
 		
 		
 		if not exists(select 1 from bethadba.entidades where i_entidades = w_i_entidades) then
@@ -98,12 +110,16 @@ begin
 		
 			insert into bethadba.entidades(i_entidades,i_ruas,i_bairros,i_cidades,i_entidades_princ,apelido,cep,numero,complemento,codigo_tce,ddd,telefone,fax,email,cnpj,
 										   i_tipos_adm) 
-			values (w_i_entidades,w_i_ruas,w_i_bairros,w_i_cidades,1,w_apelido,w_cep,w_numero,w_complemento,w_i_entidades,w_ddd,w_telefone,w_fax,null,w_cnpj,8) 
+			values (w_i_entidades,w_i_ruas,w_i_bairros,w_i_cidades,1,w_apelido,w_cep,w_numero,w_complemento,w_i_entidades,w_ddd,w_telefone,w_fax,null,w_cnpj,8); 
 
-			
-			insert into bethadba.hist_entidades(i_entidades,i_competencias, i_ruas,i_bairros,i_cidades,cep,numero,complemento,ddd,telefone,fax,email,cnpj,
-										   i_cnae_preponderante, i_tipos_adm) 
-			values (w_i_entidades,'2024-01-01', w_i_ruas,w_i_bairros,w_i_cidades,w_cep,w_numero,w_complemento,w_ddd,w_telefone,w_fax,null,w_cnpj,1, 8) 
+			insert into bethadba.hist_entidades(i_entidades,i_competencias, i_ruas,i_bairros,i_cidades,cep,numero,complemento,ddd,telefone,fax,email,cnpj, i_tipos_adm) 
+			values (w_i_entidades,'2024-01-01', w_i_ruas,w_i_bairros,w_i_cidades,w_cep,w_numero,w_complemento,w_ddd,w_telefone,w_fax,null,w_cnpj, 8); 
+		
+			 		-- BUG BTHSC-8213
+		--BUG BTHSC-8194 CNAE incorreto
+			insert into bethadba.hist_entidades_software_house(i_entidades,cnpj,i_competencias,razao_social,nome_contato,ddd,telefone,email)
+			values (w_i_entidades ,w_cnpj,'2024-01-01','BETHA SISTEMAS','BETHA SISTEMAS','048','34310733','betha@betha.com.br');
+		
 		else
 			message 'Ent.: '||w_i_entidades||' Nom.: '||w_apelido to client;
 			update bethadba.entidades 
@@ -123,10 +139,6 @@ begin
 				cnpj = w_cnpj 
 			where i_entidades = w_i_entidades
 		end if;
-		-- BUG BTHSC-8213
-		--BUG BTHSC-8194 CNAE incorreto
-		insert into bethadba.hist_entidades_software_house(i_entidades,cnpj,i_competencias,razao_social,nome_contato,ddd,telefone,email,i_cnae_preponderante,)
-values (w_i_entidades ,w_cnpj,'1990-01-01','BETHA SISTEMAS','BETHA SISTEMAS','048','34310733','betha@betha.com.br' ,w_i_cnae );
 			-- BUG BTHSC-8213
 		// *****  Converte tabela bethadba.entidades_folha		
 		if w_i_bancos = 0 then
@@ -143,7 +155,7 @@ values (w_i_entidades ,w_cnpj,'1990-01-01','BETHA SISTEMAS','BETHA SISTEMAS','04
 		
 		if not exists(select 1 from bethadba.entidades_folha where i_entidades = w_i_entidades) then
 			insert into bethadba.entidades_folha(i_entidades,i_bancos,i_agencias,i_cnae,cod_fgts,sigla,autonomos) 
-			values(w_i_entidades,w_i_bancos,w_i_agencias,w_i_cnae,null,null,'N') 
+			values(w_i_entidades,w_i_bancos,w_i_agencias,w_i_cnae,null,null,'N');
 		else
 			update bethadba.entidades_folha 
 			set i_bancos = w_i_bancos,
@@ -157,10 +169,12 @@ values (w_i_entidades ,w_cnpj,'1990-01-01','BETHA SISTEMAS','BETHA SISTEMAS','04
 	end for;
 end
 ;  
- 
+
+
+
  		--BUG BTHSC-8215 /BTHSC-8209
-		insert into bethadba.hist_entidades_compl (i_entidades,i_competencias,pagto_previdenciario,i_pessoas,cnpj_efr,i_entidades_efr,indicativo_entidade_educativa
-select top 1  1,'2023-05-01',1,(select i_pessoas from bethadba.pessoas where nome = nmresponsavel) as pessoas,(SELECT FIRST CNPJ_EFR FROM gp001_EMPRESA) cnpjef,1,'S'  from gp001_RESPONSAVEL ;
+		--insert into bethadba.hist_entidades_compl (i_entidades,i_competencias,pagto_previdenciario,i_pessoas,cnpj_efr,i_entidades_efr,indicativo_entidade_educativa
+--select top 1  1,'2023-05-01',1,(select i_pessoas from bethadba.pessoas where nome = nmresponsavel) as pessoas,(SELECT FIRST CNPJ_EFR FROM gp001_EMPRESA) cnpjef,1,'S'  from gp001_RESPONSAVEL ;
 		--BUG BTHSC-8215 /BTHSC-8209 
 
 

@@ -9,7 +9,10 @@ begin
   // *****  Tabela bethadba.bairros
   declare w_i_bairros integer;
 	ooLoop: for oo as cnv_bairro dynamic scroll cursor for 
-		select 1 as w_i_entidades,(CdUf*100000)+cdMunicipio as w_cdMunicipio,cdBairro as w_cdBairro,trim(nmBairro) as w_nome 
+		select 1 as w_i_entidades,
+			(CdUf*100000)+cdMunicipio as w_cdMunicipio,
+			cdBairro as w_cdBairro,
+			trim(nmBairro) as w_nome 
 		from tecbth_delivery.gp001_BAIRRO  
 		order by 1,2 asc
 	do
@@ -22,7 +25,7 @@ begin
 		into w_i_bairros 
 		from bethadba.bairros;
 		
-		if not exists(select 1 from bethadba.bairros where trim(nome) = trim(w_nome)) then
+		if not exists(select 1 from bethadba.bairros where bairros.nome = trim(w_nome)) then
 			message 'Bai.: '||w_i_bairros||' Nom.: '||w_nome to client;
 			
 			insert into bethadba.bairros(i_bairros,nome)on existing skip
@@ -36,7 +39,7 @@ begin
 			select i_bairros 
 			into w_i_bairros 
 			from bethadba.bairros 
-			where trim(nome) = trim(w_nome);
+			where bairros.nome = trim(w_nome);
 			
 			insert into tecbth_delivery.antes_depois 
 			values('B',w_i_entidades,w_cdMunicipio,w_cdBairro,null,w_i_bairros,null,null,null,null) ;
