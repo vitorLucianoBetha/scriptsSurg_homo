@@ -104,8 +104,8 @@ begin
        --if  w_i_eventos >= 400 and w_tipo_pd in('P','D') then
 		message 'Eve.: '||w_i_eventos||' Nom.: '||w_nome||' Tip.: '||w_tipo_pd to client;
 		insert into bethadba.eventos(i_eventos,nome,tipo_pd,taxa,unidade,sai_rais,compoe_liq,compoe_hmes,digitou_form,classif_evento,cods_conversao,desativado,seq_impressao,
-									codigo_tce,deduc_fundo_financ)on existing skip
-		values (w_i_eventos,w_nome,w_tipo_pd,w_taxa,w_unidade,w_sai_rais,w_compoe_liq,w_compoe_hmes,w_digitou_form,w_classif_evento,null,'N',null,w_i_eventos,'N'); 
+									codigo_tce,deduc_fundo_financ, natureza, i_atos, envia_fly_transparencia, montar_base_fgts_integral_afast, enviar_esocial)on existing skip
+		values (w_i_eventos,w_nome,w_tipo_pd,w_taxa,w_unidade,w_sai_rais,w_compoe_liq,w_compoe_hmes,w_digitou_form,w_classif_evento,null,'N',null,w_i_eventos,'N', null, null, 'N', 'N', 'S'); 
       --end if;
 	  -- BUG BTHSC-8214
 
