@@ -3,12 +3,35 @@ if  exists (select 1 from sys.sysprocedure where creator = (select user_id from 
 end if
 ; 
 
+-- BTHSC-59216 ajuste organogramas - André
+
 begin
 	// **** Primeiro cursor
 	declare cur_conver dynamic scroll cursor for 
-		select 1,Funcionario.cdMatricula as w_i_funcionarios,Funcionario.SqContrato,CdPessoa,DtAdmissao,Funcionario.cdFilial,cdVinculoEmpregaticio,InPagamentoLiquido,tecbth_delivery.fu_tirachars(tecbth_delivery.fu_tirachars(nrContaCorrente,'X'),'.'),dgContaCorrente,
-			   NrBancoContaCorrente,NrAgenciaCheque,NrBancoCheque,NrAgenciaContaCorrente,cdHorario,InOpcaoFgts,inContribuiINSS,inContribuiFundoPrev,Funcionario.cdAgenteNocivo,DtUltimoExame,
-			   dtFimContrato,DtTransferencia, Funcionario.cdLocal ,if Lotacao.CdOrganograma = 99 then 2 else 1 endif, nivel1||nivel2||nivel3,SqCartaoPonto 
+		select 1,Funcionario.cdMatricula as w_i_funcionarios,
+			Funcionario.SqContrato,
+			CdPessoa,
+			DtAdmissao,
+			Funcionario.cdFilial,
+			cdVinculoEmpregaticio,
+			InPagamentoLiquido,
+			tecbth_delivery.fu_tirachars(tecbth_delivery.fu_tirachars(nrContaCorrente,'X'),'.'),dgContaCorrente,
+			NrBancoContaCorrente,
+			NrAgenciaCheque,
+			NrBancoCheque,
+			NrAgenciaContaCorrente,
+			cdHorario,
+			InOpcaoFgts,
+			inContribuiINSS,
+			inContribuiFundoPrev,
+			Funcionario.cdAgenteNocivo,
+			DtUltimoExame,
+			dtFimContrato,
+			DtTransferencia,
+			Funcionario.cdLocal,
+			if Lotacao.CdOrganograma = 99 then 2 else 1 endif,
+			nivel1||nivel2||nivel3||nivel4,
+			SqCartaoPonto 
 		from tecbth_delivery.GP001_Funcionario as Funcionario,tecbth_delivery.GP001_HistoricoLotacao as HistoricoLotacao,tecbth_delivery.GP001_Lotacao as Lotacao,tecbth_delivery.GP001_Empresa as Empresa 
 		where TpTransferencia not in('E','F') 
 		and Funcionario.CdMatricula = HistoricoLotacao.CdMatricula 
@@ -16,21 +39,62 @@ begin
 		and HistoricoLotacao.CdLocalTransf = Lotacao.CdLocal 
 		and Lotacao.CdOrganograma = Empresa.CdOrganograma  
 		union
-		select 1,Funcionario.cdMatricula as w_i_funcionarios,Funcionario.SqContrato,CdPessoa,DtAdmissao,Funcionario.cdFilial,cdVinculoEmpregaticio,InPagamentoLiquido,tecbth_delivery.fu_tirachars(tecbth_delivery.fu_tirachars(nrContaCorrente,'X'),'.'),dgContaCorrente,
-			   NrBancoContaCorrente,NrAgenciaCheque,NrBancoCheque,NrAgenciaContaCorrente,cdHorario,InOpcaoFgts,inContribuiINSS,inContribuiFundoPrev,Funcionario.cdAgenteNocivo,DtUltimoExame,
-			   dtFimContrato,date(now(*)), Funcionario.cdLocal ,if Lotacao.CdOrganograma = 99 then 2 else 1 endif,
-			   nivel1||nivel2||nivel3 ,SqCartaoPonto
+		select 1,Funcionario.cdMatricula as w_i_funcionarios,
+			Funcionario.SqContrato,
+			CdPessoa,
+			DtAdmissao,
+			Funcionario.cdFilial,
+			cdVinculoEmpregaticio,
+			InPagamentoLiquido,
+			tecbth_delivery.fu_tirachars(tecbth_delivery.fu_tirachars(nrContaCorrente,'X'),'.'),dgContaCorrente,
+			NrBancoContaCorrente,
+			NrAgenciaCheque,
+			NrBancoCheque,
+			NrAgenciaContaCorrente,
+			cdHorario,
+			InOpcaoFgts,
+			inContribuiINSS,
+			inContribuiFundoPrev,
+			Funcionario.cdAgenteNocivo,
+			DtUltimoExame,
+			dtFimContrato,
+			date(now(*)),
+			Funcionario.cdLocal,
+			if Lotacao.CdOrganograma = 99 then 2 else 1 endif,
+			nivel1||nivel2||nivel3||nivel4 ,
+			SqCartaoPonto
 		from tecbth_delivery.GP001_funcionario as funcionario,tecbth_delivery.GP001_lotacao as lotacao,tecbth_delivery.GP001_Empresa as Empresa 
 		where funcionario.CdLocal = lotacao.CdLocal 
 		and Lotacao.CdOrganograma = Empresa.CdOrganograma 
 		union
-		select 1,Funcionario.cdMatricula as w_i_funcionarios,Funcionario.SqContrato,CdPessoa,DtAdmissao,Funcionario.cdFilial,cdVinculoEmpregaticio,InPagamentoLiquido,tecbth_delivery.fu_tirachars(tecbth_delivery.fu_tirachars(nrContaCorrente,'X'),'.'),dgContaCorrente,
-			   NrBancoContaCorrente,NrAgenciaCheque,NrBancoCheque,NrAgenciaContaCorrente,cdHorario,InOpcaoFgts,inContribuiINSS,inContribuiFundoPrev,Funcionario.cdAgenteNocivo,DtUltimoExame,
-			   dtFimContrato,now(*), Funcionario.cdLocal ,if Lotacao.CdOrganograma = 99 then 2 else 1 endif, nivel1||nivel2||nivel3 ,SqCartaoPonto
+		select 1,Funcionario.cdMatricula as w_i_funcionarios,
+			Funcionario.SqContrato,
+			CdPessoa,
+			DtAdmissao,
+			Funcionario.cdFilial,
+			cdVinculoEmpregaticio,
+			InPagamentoLiquido,
+			tecbth_delivery.fu_tirachars(tecbth_delivery.fu_tirachars(nrContaCorrente,'X'),'.'),dgContaCorrente,
+			NrBancoContaCorrente,
+			NrAgenciaCheque,
+			NrBancoCheque,
+			NrAgenciaContaCorrente,
+			cdHorario,
+			InOpcaoFgts,
+			inContribuiINSS,
+			inContribuiFundoPrev,
+			Funcionario.cdAgenteNocivo,
+			DtUltimoExame,
+			dtFimContrato,
+			now(*),
+			Funcionario.cdLocal,
+			if Lotacao.CdOrganograma = 99 then 2 else 1 endif,
+			nivel1||nivel2||nivel3||nivel4,
+			SqCartaoPonto
 		from tecbth_delivery.GP001_funcionario as funcionario, tecbth_delivery.GP001_lotacao as lotacao,tecbth_delivery.GP001_Empresa as Empresa 
 		where funcionario.CdLocal = lotacao.CdLocal 
 		and Lotacao.CdOrganograma = Empresa.CdOrganograma 
-		order by 1,2,3,22 asc;	 
+		order by 1,2,3,22 asc; 
 	 
 	 
 	// **** Segundo cursor
