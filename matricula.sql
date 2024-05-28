@@ -107,7 +107,7 @@ end) into w_provimento
 		elseif w_inSituacaoFuncional = 3 then
 			set w_tipo_func='B'
 		elseif w_inSituacaoFuncional = 9 then
-			set w_tipo_func='A'
+			set w_tipo_func='F'
 		end if;
 		--BUG BTHSC-8011 Não migrou registros de autonomos
 		if vinculos in (17, 52, 51) then 
