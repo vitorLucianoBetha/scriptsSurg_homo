@@ -35,19 +35,72 @@ begin
     declare w_valida_Pis integer;
 	--BTHSC-7236 bug
 	ooLoop: for oo as cnv_pessoas dynamic scroll cursor for
-		select  1 as w_i_entidades,Pessoa.CdPessoa as w_CdPessoa,trim(upper(nmPessoa)) as w_nome,right(fu_tirachars(trim(nrddd),','),2) as w_ddd,right(fu_tirachars(trim(NrFone),'-'),8) as w_telefone,
-			    cdCidadeNascimento as w_cdCidadeNascimento,sgEstadoNascimento as w_sgEstadoNascimento,date(dtNascimento) as w_dt_nascimento,tpSexo as w_sexo,cdEstadoCivil as w_cdEstadoCivil,
-			    cdNacionalidade as w_cdNacionalidade,trim(NrIdentidade) as w_rg,trim(NmOrgaoIdentidade) as w_orgao_emis_rg,DtExpedicaoIdentidade as w_dt_emis_rg,SgEstadoIdentidade as w_SgEstadoIdentidade,
-			    cast(NrPis as decimal(15)) as w_num_pis,dtCadastroPisPasep as w_dt_pis,cast(NrCpf as decimal(15)) as w_NrCpf,trim(NrCarteiraProf) as w_carteira_prof,trim(NrSerieCarteiraProf) as w_serie_cart,
-			    DtExpedicaoCartProf as w_dt_emis_carteira,sgEstadoCarteira as w_sgEstadoCarteira,trim(NmPai) as w_nome_pai,trim(NmMae) as w_nome_mae,trim(NrZonaEleitoral) as w_zona_eleitoral,
-			    trim(NrSecaoEleitoral) as w_secao_eleitoral,cast(NrTituloEleitoral as decimal(15)) as w_titulo_eleitor,trim(NrCarteiraReservista) as w_num_reservista,TipoSanguineo as w_TipoSanguineo,
-			    FatorRh as w_FatorRh,trim(NrCarteiraHabilitacao) as w_cnh,dtValidadeHabilitacao as w_dt_vencto_cnh,cdRacaCor as w_cdRacaCor,cdDeficiente as w_cdDeficiente,cdUf as w_cdUf,cdMunicipio as w_cdMunicipio, 
-			    trim(DsComplLogradouro) as w_complemento,NrEndereco as w_numero,dtAnoChegada as w_ano_chegada,trim(nrIdentidadeEstrangeiro) as w_nrIdentidadeEstrangeiro,date(dtValidadeIdentEstrang) as w_dtValidadeIdentEstrang,
-			    trim(tpVistoEstrangeiro) as w_tpVistoEstrangeiro,trim(nrCartProfEstrangeiro) as w_nrCartProfEstrangeiro,trim(nrSerieCartProfEstrang) as w_nrSerieCartProfEstrang,date(dtExpedCartProfEstrang) as w_dtExpedCartProfEstrang,
-			    date(dtValidadeCartProfEstrang) as w_dtValidadeCartProfEstrang,CdLogradouro as w_CdLogradouro,trim(DsEndereco) as w_nome_rua,CdCep as w_cep,CdBairro as w_CdBairro,InDependente as w_InDependente,
-			    CdTipoDeficiencia as w_CdTipoDeficiencia,right(NrCelular,8) as w_celular,DtObito as w_dt_obito,NmCartorio as w_cartorio_reg,NrRegistro as w_NrRegistro,Email as w_EmailFunc,EmailPessoal as w_EmailPessoal,
-			    dsCategoriaHabilitacao as w_dsCategoriaHabilitacao,inCertidao as w_inCertidao,nrFolha as w_nrFolha,nrLivro as w_nrLivro,trim(dsApelido) as w_nome_fantasia,null as w_NrFoneFax,2 as w_TpInscricao
-		from tecbth_delivery.gp001_pessoa as pessoa,gp001_enderecopessoa as enderecopessoa 
+		select  1 as w_i_entidades,
+			Pessoa.CdPessoa as w_CdPessoa,
+			trim(upper(nmPessoa)) as w_nome,
+			right(tecbth_delivery.fu_tirachars(trim(nrddd),','),2) as w_ddd,
+			right(tecbth_delivery.fu_tirachars(trim(NrFone),'-'),8) as w_telefone,
+			cdCidadeNascimento as w_cdCidadeNascimento,
+			sgEstadoNascimento as w_sgEstadoNascimento,
+			date(dtNascimento) as w_dt_nascimento,
+			tpSexo as w_sexo,
+			cdEstadoCivil as w_cdEstadoCivil,
+			cdNacionalidade as w_cdNacionalidade,
+			trim(NrIdentidade) as w_rg,
+			trim(NmOrgaoIdentidade) as w_orgao_emis_rg,
+			DtExpedicaoIdentidade as w_dt_emis_rg,
+			SgEstadoIdentidade as w_SgEstadoIdentidade,
+			cast(NrPis as decimal(15)) as w_num_pis,
+			dtCadastroPisPasep as w_dt_pis,
+			cast(NrCpf as decimal(15)) as w_NrCpf,
+			trim(NrCarteiraProf) as w_carteira_prof,
+			trim(NrSerieCarteiraProf) as w_serie_cart,
+			DtExpedicaoCartProf as w_dt_emis_carteira,
+			sgEstadoCarteira as w_sgEstadoCarteira,
+			trim(NmPai) as w_nome_pai,
+			trim(NmMae) as w_nome_mae,
+			trim(NrZonaEleitoral) as w_zona_eleitoral,
+			trim(NrSecaoEleitoral) as w_secao_eleitoral,
+			cast(NrTituloEleitoral as decimal(15)) as w_titulo_eleitor,
+			trim(NrCarteiraReservista) as w_num_reservista,
+			TipoSanguineo as w_TipoSanguineo,
+			FatorRh as w_FatorRh,
+			trim(NrCarteiraHabilitacao) as w_cnh,
+			dtValidadeHabilitacao as w_dt_vencto_cnh,
+			cdRacaCor as w_cdRacaCor,
+			cdDeficiente as w_cdDeficiente,
+			cdUf as w_cdUf,
+			cdMunicipio as w_cdMunicipio, 
+			trim(DsComplLogradouro) as w_complemento,
+			NrEndereco as w_numero,
+			dtAnoChegada as w_ano_chegada,
+			trim(nrIdentidadeEstrangeiro) as w_nrIdentidadeEstrangeiro,
+			date(dtValidadeIdentEstrang) as w_dtValidadeIdentEstrang,
+			trim(tpVistoEstrangeiro) as w_tpVistoEstrangeiro,
+			trim(nrCartProfEstrangeiro) as w_nrCartProfEstrangeiro,
+			trim(nrSerieCartProfEstrang) as w_nrSerieCartProfEstrang,
+			date(dtExpedCartProfEstrang) as w_dtExpedCartProfEstrang,
+			date(dtValidadeCartProfEstrang) as w_dtValidadeCartProfEstrang,
+			CdLogradouro as w_CdLogradouro,
+			trim(DsEndereco) as w_nome_rua,
+			CdCep as w_cep,
+			CdBairro as w_CdBairro,
+			InDependente as w_InDependente,
+			CdTipoDeficiencia as w_CdTipoDeficiencia,
+			right(NrCelular,8) as w_celular,
+			DtObito as w_dt_obito,
+			NmCartorio as w_cartorio_reg,
+			NrRegistro as w_NrRegistro,
+			Email as w_EmailFunc,
+			EmailPessoal as w_EmailPessoal,
+			dsCategoriaHabilitacao as w_dsCategoriaHabilitacao,
+			inCertidao as w_inCertidao,
+			nrFolha as w_nrFolha,
+			nrLivro as w_nrLivro,
+			trim(dsApelido) as w_nome_fantasia,
+			null as w_NrFoneFax,
+			2 as w_TpInscricao
+		from tecbth_delivery.gp001_pessoa as pessoa, tecbth_delivery.gp001_enderecopessoa as enderecopessoa 
        where pessoa.cdpessoa *= enderecopessoa.cdpessoa 
 	   order by 1,2 asc
 	do
@@ -146,8 +199,7 @@ begin
 			where sigla = trim(w_sgEstadoNascimento);
 			
 			set w_i_cidades_nasc=w_i_cidades_nasc+w_CdCidadeNascimento
-		else
-			set w_i_cidades_nasc=null
+		else			set w_i_cidades_nasc=null
 		end if;
 		
 		if not exists(select 1 from bethadba.cidades where i_cidades = w_i_cidades_nasc) then
@@ -382,7 +434,7 @@ begin
 		if w_CdLogradouro = 0 then
 			select first depois_1 
 			into w_i_bairros 
-			from antes_depois 
+			from tecbth_delivery.antes_depois 
 			where tipo = 'B' 
 			and antes_1 = w_i_entidades 
 			and antes_2 = w_i_cidades 
@@ -415,11 +467,10 @@ begin
 		else
 			select first depois_1 
 			into w_i_ruas 
-			from antes_depois 
+			from tecbth_delivery.antes_depois 
 			where tipo = 'R' 
-			and antes_1 = w_i_entidades 
-			and antes_2 = w_i_cidades 
-			and antes_3 = w_CdLogradouro;
+			and antes_1 = w_i_cidades 
+			and antes_2 = w_CdLogradouro;
 		
 			select first i_bairros 
 			into w_i_bairros 
