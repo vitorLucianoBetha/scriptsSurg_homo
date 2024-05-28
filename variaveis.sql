@@ -61,8 +61,7 @@ begin
 		and	i_entidades = w_i_entidades;
 		
 		set w_dt_inicial = ymd(year(w_DtInicioMovto), month(w_DtInicioMovto),01);		
-		set w_dt_final = months(w_dtInicioMovto,(w_NrOcorrencia-1));
-		set w_dt_final = ymd(year(w_dt_final),month(w_dt_final),1);		
+		set w_dt_final = ymd(year(w_dtfinalValidade),month(w_dtfinalValidade),1);		
 		
 		select dt_admissao 
 		into w_dt_admissao 
@@ -83,4 +82,4 @@ begin
 		
 	end for;
 end;
-
+commit;
