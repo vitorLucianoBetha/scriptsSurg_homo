@@ -197,3 +197,7 @@ end) into w_provimento
 		end if;
 	end for;
 end; 
+
+
+-- BTHSC-57351
+update bethadba.funcionarios set tipo_func = 'F' where tipo_func = 'A'
