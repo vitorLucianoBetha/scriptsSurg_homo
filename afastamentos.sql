@@ -1,4 +1,8 @@
 
+CALL bethadba.dbp_conn_gera(1, 2019, 300);
+CALL bethadba.pg_setoption('wait_for_commit', 'on');
+CALL bethadba.pg_habilitartriggers('off');
+COMMIT;
 begin
 	// *****  Tabela bethadba.afastamentos
 	declare w_i_funcionarios integer;
