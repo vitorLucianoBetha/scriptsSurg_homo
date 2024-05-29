@@ -10,19 +10,19 @@ begin
 	select DISTINCT 1,
 			(select first n.i_niveis from bethadba.niveis n where n.i_planos_salariais = t1.cdEstruturaSalarial 
 			and  n.nome = (select t2.dsFaixaSalarial from tecbth_delivery.gp001_SALARIOFAIXA t2 
-								where t2.cdEstruturaSalarial = t1.cdEstruturaSalarial and t2.cdFaixaSalarial = t1.cdFaixaSalarial 
-								and t2.nrSequenciaFaixa = t1.nrSequenciaFaixa and t2.nrNivelSalarial = t1.nrNivelSalarial)) as i_niveis,	
+											where t2.cdEstruturaSalarial = t1.cdEstruturaSalarial and t2.cdFaixaSalarial = t1.cdFaixaSalarial 
+											and t2.nrSequenciaFaixa = t1.nrSequenciaFaixa and t2.nrNivelSalarial = t1.nrNivelSalarial)) as i_niveis,	
 			dtCriacao = if (select datetime(max(t3.dtInicioValidade)) from tecbth_delivery.gp001_SALARIOFAIXA_HISTORICO t3 
-								where t1.cdEstruturaSalarial = t3.cdEstruturaSalarial and t1.vlFaixaSalarial = t3.vlFaixaSalarial
-								and t1.cdFaixaSalarial = t3.cdFaixaSalarial and t1.nrSequenciaFaixa = t3.nrSequenciaFaixa) is null then
-							(select datetime(max(t3.dtreferencia)) from tecbth_delivery.gp001_SALARIOFAIXA_HISTORICO t3 
-							where t1.cdEstruturaSalarial = t3.cdEstruturaSalarial and t1.vlFaixaSalarial = t3.vlFaixaSalarial
-							and t1.cdFaixaSalarial = t3.cdFaixaSalarial and t1.nrSequenciaFaixa = t3.nrSequenciaFaixa)
-						else
-							(select datetime(max(t3.dtInicioValidade)) from tecbth_delivery.gp001_SALARIOFAIXA_HISTORICO t3 
-							where t1.cdEstruturaSalarial = t3.cdEstruturaSalarial and t1.vlFaixaSalarial = t3.vlFaixaSalarial
-							and t1.cdFaixaSalarial = t3.cdFaixaSalarial and t1.nrSequenciaFaixa = t3.nrSequenciaFaixa)
-						endif,
+									where t1.cdEstruturaSalarial = t3.cdEstruturaSalarial and t1.vlFaixaSalarial = t3.vlFaixaSalarial
+									and t1.cdFaixaSalarial = t3.cdFaixaSalarial and t1.nrSequenciaFaixa = t3.nrSequenciaFaixa) is null then
+										(select datetime(max(t3.dtreferencia)) from tecbth_delivery.gp001_SALARIOFAIXA_HISTORICO t3 
+										where t1.cdEstruturaSalarial = t3.cdEstruturaSalarial and t1.vlFaixaSalarial = t3.vlFaixaSalarial
+										and t1.cdFaixaSalarial = t3.cdFaixaSalarial and t1.nrSequenciaFaixa = t3.nrSequenciaFaixa)
+									else
+										(select datetime(max(t3.dtInicioValidade)) from tecbth_delivery.gp001_SALARIOFAIXA_HISTORICO t3 
+										where t1.cdEstruturaSalarial = t3.cdEstruturaSalarial and t1.vlFaixaSalarial = t3.vlFaixaSalarial
+										and t1.cdFaixaSalarial = t3.cdFaixaSalarial and t1.nrSequenciaFaixa = t3.nrSequenciaFaixa)
+									endif,
 			t1.cdMotivoReajuste as i_motivos,
 			0 as vlr_anterior,
 			t1.vlFaixaSalarial as valor_novo,
@@ -34,8 +34,12 @@ begin
 			'N' as coeficiente,
 			'N' as coeficiente_anterior
 	from tecbth_delivery.gp001_SALARIOFAIXA_HISTORICO t1  
-	where t1.nrNivelSalarial in (2,3)
-	and i_niveis is not null;
+	where i_niveis is not null
+	and exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
+						where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
+						and gs.cdNivelSalarial = t1.nrNivelSalarial
+						and gs.dsNivelSalarial like 'Classe')
+	order by 1,2 asc;	
 
   // *****  Tabela bethadba.niveis
   declare w_i_entidades integer;
@@ -80,6 +84,7 @@ begin
       set w_valor_anterior= 0.01
     end if;
    	if w_carga_hor = 0 then set w_carga_hor = 180 end if;
+    if w_i_motivos = 0 then set w_i_motivos = 5 end if;
   
     message ' i_niveis.: '||string(w_i_niveis) || ' Data.: ' || w_dtCriacao to client;
     if not exists(select 1 from bethadba.hist_niveis where

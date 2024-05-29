@@ -1,18 +1,19 @@
 
 begin
   declare cur_conver dynamic scroll cursor for
-  	select 1,t1.dsFaixaSalarial,
-	  t1.cdEstruturaSalarial,
+  	select 1,
+  	  t1.dsFaixaSalarial,
+	    t1.cdEstruturaSalarial,
       t1.cdFaixaSalarial,
       t1.vlFaixaSalarial,
-      (select t2.nrHorasReferencia from tecbth_delivery.gp001_salariofaixa t2 where left(t1.cdFaixaSalarial, 3) = t2.cdFaixaSalarial and t2.nrNivelSalarial = 1 and t1.cdEstruturaSalarial = t2.cdEstruturaSalarial),
+      t1.nrHorasReferencia,
       date(t1.dtInicioValidade),
       number(*) AS CODIGO      
     from tecbth_delivery.gp001_salariofaixa  as t1
     where exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
 						where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
 						and gs.cdNivelSalarial = t1.nrNivelSalarial
-						and (gs.dsNivelSalarial like 'Nivel' or gs.dsNivelSalarial like 'Valor' or gs.dsNivelSalarial like 'Faixa'))
+						and gs.dsNivelSalarial like 'Classe' )
     order by 1 asc,2 asc, 3 asc;
 
   // *****  Tabela bethadba.niveis
