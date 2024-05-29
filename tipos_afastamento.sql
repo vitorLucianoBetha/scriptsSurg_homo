@@ -7,7 +7,7 @@ WITH max_code AS (
     SELECT MAX(cdAfastamento) AS max_cdAfastamento
     FROM tecbth_delivery.gp001_motivoafastamento
 ),
-ausencia_with_rownum AS (
+ausencia_with_rownum AS  (
     SELECT 
         cdAusencia, 
         dsAusencia,
