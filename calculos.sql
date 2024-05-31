@@ -37,7 +37,7 @@ begin
 			cdVerba as w_cdVerba,inRetificacao as w_inRetificacao,dtPagamento as w_dtPagamento,fu_convdecimal(tira_caracter_1(vlComplemento),0) as w_vlr_inf,
 			cast(vlMensal as decimal(12,2)) as w_vlr_calc,cast(vlAuxiliar as decimal(12,2)) as w_vlAuxiliar,
 			cast(vlIntegral as decimal(12,2)) as w_vlIntegral 
-		from tecbth_delivery.gp001_fichafinanceira  order by 1,4,2,3,5 asc	
+		from tecbth_delivery.gp001_fichafinanceira where cdMatricula = 192864 
 	do
 		
 		// *****  Tabela bethadba.movimentos
@@ -103,25 +103,18 @@ begin
 			elseif w_tpCalculo = 10 then --42-Complementar
 				set w_i_tipos_proc=42;
 				set w_mov_resc='N'
-			elseif w_tpCalculo = 11 then --11-Mensal
-				set w_i_tipos_proc=11;
-				set w_mov_resc='N'
-			else --11-Mensal
-				set w_i_tipos_proc=11;
-				set w_mov_resc='N'
+			
 			end if;
 
-			if day(w_dtCompetencia) != 1 then
-				set w_i_competencias=string(year(w_dtCompetencia))+'-'+string(month(w_dtCompetencia))+'-'+'01'
-			else
-				set w_i_competencias=date(w_dtCompetencia)
-			end if;
+		
+				set w_i_competencias=date(w_dtCompetencia);
+	
 			
 			set w_i_processamentos=1;
 
 
 	
-			if not w_cdVerba = any(select  first evento from tecbth_delivery.evento_aux where tipo_pd = 'F' and w_i_entidades = w_i_entidades) then
+			if not w_cdVerba = any(select  evento from tecbth_delivery.evento_aux where tipo_pd = 'F' and w_i_entidades = w_i_entidades) then
 				if not exists(select distinct  1 from tecbth_delivery.evento_aux where evento = w_cdVerba and retificacao = w_inRetificacao and w_i_entidades = w_i_entidades) then
 					if w_inRetificacao in('C','D') then
 						select   evento,nome,tipo_pd,taxa,unidade,sai_rais,compoe_liq,compoe_hmes,digitou_form,classif_evento 
@@ -132,14 +125,7 @@ begin
 						and resc_mov = 'N' 
 						and i_entidades = w_i_entidades;
 						-- AJUSTE
-						if w_inRetificacao = 'C' then
-							set w_nome_aux=upper(w_nome_aux)+' PROV';
-							set w_tipo_pd_aux='P'
-                            
-						else
-							set w_nome_aux=upper(w_nome_aux)+' DESC';
-							set w_tipo_pd_aux='D'                           
-						end if;
+					
 						
 						select distinct coalesce(max(w_i_eventos),0)+1 
 						into w_evento 
@@ -225,7 +211,7 @@ select first tipo_pd,compoe_liq,classif_evento
 				
 				message 'Ent.: '||w_i_entidades||' Tip.: '||w_i_tipos_proc||' Com.: '||w_i_competencias||' Pro.: '||w_i_processamentos||' Fun.: '||w_i_funcionarios||' Eve.: '||w_i_eventos||
 						' Vlr. Inf.: '||w_vlr_inf||' Vlr. Cal.: '||w_vlr_calc to client;
-                insert into bethadba.movimentos(i_entidades,i_tipos_proc,i_competencias,i_processamentos,i_funcionarios,i_eventos,vlr_inf,vlr_calc,tipo_pd,compoe_liq,classif_evento,mov_resc)on existing skip
+                insert into bethadba.movimentos(i_entidades,i_tipos_proc,i_competencias,i_processamentos,i_funcionarios,i_eventos,vlr_inf,vlr_calc,tipo_pd,compoe_liq,classif_evento,mov_resc)
 		    	values (w_i_entidades,w_i_tipos_proc,w_i_competencias,w_i_processamentos,w_i_funcionarios,w_i_eventos,w_vlr_inf,w_vlr_calc,w_tipo_pd,w_compoe_liq,w_classif_evento,w_mov_resc);
 		    	 
 			end if;
@@ -233,6 +219,8 @@ select first tipo_pd,compoe_liq,classif_evento
 	end for;
 end;
 
+-- BTHSC-56558 // Remove desconto de convênios nos décimos // após os movimentos e antes do update
+--update bethadba.movimentos set compoe_liq = 'N' WHERE i_eventos in (441,4) and i_tipos_proc in (51,52)
 
 
 update bethadba.dados_calc as t1 
@@ -258,3 +246,5 @@ set vlr_proventos = (select coalesce(sum(vlr_calc),0)
 
 commit
 ;
+
+

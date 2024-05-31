@@ -1375,20 +1375,6 @@ update bethadba.eventos set tipo_pd = 	'P'	, compoe_liq =	'N'	where i_eventos = 
 
 
 
-UPDATE bethadba.hist_salariais hs
-LEFT JOIN tecbth_delivery.gp001_HISTORICOSALARIAL hs2
-ON (hs.i_funcionarios = hs2.CdMatricula and  date(hs.dt_alteracoes) = date(hs2.DtGeracao) )
-
-
-SET hs.i_niveis = CASE 
-                     WHEN hs2.nrNivelCargo = 0 THEN NULL 
-                     ELSE hs2.nrNivelCargo 
-                  END
-end
-
-WHERE hs.i_funcionarios = 180432
-
-
 update bethadba.hist_cargos_cadastro hc 
 left join tecbth_delivery.gp001_cargo c 
 on hc.i_cargos = c.cdCargo 
