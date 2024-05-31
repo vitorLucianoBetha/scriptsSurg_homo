@@ -13,7 +13,7 @@ begin
     where exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
 						where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
 						and gs.cdNivelSalarial = t1.nrNivelSalarial
-						and gs.dsNivelSalarial like 'Classe' )
+						and ((gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 2) or (gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 1) or (gs.dsNivelSalarial like 'valor' and gs.cdNivelSalarial = 1) ) )
     order by 1 asc,2 asc, 3 asc;
 
   // *****  Tabela bethadba.niveis
