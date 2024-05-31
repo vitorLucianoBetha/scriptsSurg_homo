@@ -222,7 +222,6 @@ end;
 -- BTHSC-56558 // Remove desconto de convênios nos décimos // após os movimentos e antes do update
 --update bethadba.movimentos set compoe_liq = 'N' WHERE i_eventos in (441,4) and i_tipos_proc in (51,52)
 
-
 update bethadba.dados_calc as t1 
 set vlr_proventos = (select coalesce(sum(vlr_calc),0) 
 				     from bethadba.movimentos as t2 
@@ -241,10 +240,7 @@ set vlr_proventos = (select coalesce(sum(vlr_calc),0)
 					 and t2.i_processamentos = t1.i_processamentos 
 					 and t2.i_funcionarios = t1.i_funcionarios 
 					 and t2.tipo_pd = 'D' 
-					 and t2.compoe_liq = 'S')
-;
+					 and t2.compoe_liq = 'S');
 
-commit
-;
-
+commit;
 
