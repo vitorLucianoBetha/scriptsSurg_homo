@@ -47,9 +47,10 @@ begin
 	FOR teste AS curs CURSOR FOR
    		select
 			t1.cdEstruturaSalarial as planod,
-			t1.cdFaixaSalarial as faixad,
-			t1.sgFaixaSalarial as w_i_clas_niveisd,								
-			w_i_referenciasd = faixad,
+			t1.cdFaixaSalarial as w_faixad,
+			t1.sgFaixaSalarial as w_i_clas_niveisdd,	
+			left(t1.sgFaixaSalarial,1) as w_i_clas_niveisd,								
+			w_i_referenciasd = right(w_faixad,3),
 			t1.vlFaixaSalarial as w_valor,
 			number(*) as w_ordem	
 		from tecbth_delivery.gp001_SALARIOFAIXA t1
@@ -61,7 +62,7 @@ begin
 						where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
 						and gs.cdNivelSalarial = t1.nrNivelSalarial - 1
 						and gs.dsNivelSalarial like 'Classe')
-		and planod = w_plano and left(faixad,LENGTH(w_faixa)) = w_faixa
+		and planod = w_plano and left(w_faixad,LENGTH(w_faixa)) = w_faixa
 	
  	DO
  	  
@@ -69,10 +70,14 @@ begin
 	    if not exists(select 1 from bethadba.clas_niveis where
 	        i_entidades = w_i_entidades and
 	        i_niveis = w_i_niveis and
-	        i_clas_niveis = w_i_clas_niveisd) then
+	        i_clas_niveis = w_i_clas_niveisd and
+	        i_referencias = w_i_referenciasd) then
 	  
 	      insert into bethadba.clas_niveis( i_entidades,i_niveis,i_clas_niveis,i_referencias,valor,ordem) 
-	      values(w_i_entidades,w_i_niveis,w_i_clas_niveisd,w_i_referenciasd,w_valor,w_ordem) 
+	      values(w_i_entidades,w_i_niveis, w_i_clas_niveisd,w_i_referenciasd,w_valor,w_ordem) ;
+	      
+	      insert into tecbth_delivery.antes_depois(tipo, antes_1, antes5, antes6, depois_1, depois_2, depois5, depois6) 
+	      values('C', planod, w_i_clas_niveisdd, w_faixad, w_i_niveis, w_ordem, w_i_clas_niveisd, w_i_referenciasd) ;
 	    end if
 	END FOR;
   end loop L_item;

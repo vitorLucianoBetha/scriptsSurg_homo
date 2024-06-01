@@ -8,16 +8,14 @@ COMMIT;
 begin
   declare cur_conver dynamic scroll cursor for
 	select DISTINCT 1 as w_entidade,
-   		(select  cn.i_niveis from bethadba.clas_niveis cn 
-   		where cn.i_clas_niveis = t1.sgFaixaSalarial and cn.i_referencias = t1.cdFaixaSalarial 
-   		and t1.cdEstruturaSalarial = (select n.i_planos_salariais from bethadba.niveis n where cn.i_niveis = n.i_niveis)) as w_i_niveis,
-		t1.sgFaixaSalarial as w_i_clas_niveis,								
-		w_i_referencias = t1.cdFaixaSalarial,
+   		(select first ad.depois_1 from tecbth_delivery.antes_depois ad
+   		where ad.antes5 = t1.sgFaixaSalarial and ad.antes6 = t1.cdFaixaSalarial and ad.antes_1 = t1.cdEstruturaSalarial) as w_i_niveis,
+		left(t1.sgFaixaSalarial,1) as w_i_clas_niveis,								
+		w_i_referencias = right(t1.cdFaixaSalarial,3),
 		w_dt_alteracoes = if t1.dtInicioValidade is null then t1.dtreferencia else t1.dtInicioValidade endif,
 		t1.vlFaixaSalarial as w_valor,
-		(select  cn.ordem from bethadba.clas_niveis cn 
-   		where cn.i_clas_niveis = t1.sgFaixaSalarial and cn.i_referencias = t1.cdFaixaSalarial 
-   		and t1.cdEstruturaSalarial = (select n.i_planos_salariais from bethadba.niveis n where cn.i_niveis = n.i_niveis)) as w_ordem,
+		(select first ad.depois_2 from tecbth_delivery.antes_depois ad
+   		where ad.antes5 = t1.sgFaixaSalarial and ad.antes6 = t1.cdFaixaSalarial and ad.antes_1 = t1.cdEstruturaSalarial) as w_ordem,
    		t1.cdEstruturaSalarial as w_plano
 	from tecbth_delivery.gp001_SALARIOFAIXA_HISTORICO t1
 	where exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
@@ -112,6 +110,7 @@ begin
 	        hcn.i_entidades = w_i_entidades and
 	        hcn.i_niveis = w_i_niveis and
 	        hcn.i_clas_niveis = w_i_clas_niveis and
+	        hcn.i_referencias = w_i_referencias and
 	        hcn.dt_alteracoes = w_dt_alteracoes) then
 	  
 	      insert into bethadba.hist_clas_niveis( i_entidades,i_niveis,i_clas_niveis,i_referencias,dt_alteracoes,vlr_anterior,vlr_novo,ordem,ordem_anterior) 
