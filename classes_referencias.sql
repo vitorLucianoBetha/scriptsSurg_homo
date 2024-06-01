@@ -10,19 +10,13 @@ begin
 	select 1, t1.cdEstruturaSalarial as plano,
 			t1.cdFaixaSalarial as faixa,
 			(select first n.i_niveis from bethadba.niveis n where n.i_planos_salariais = t1.cdEstruturaSalarial 
-			and  n.nome = (select t2.dsFaixaSalarial from tecbth_delivery.gp001_SALARIOFAIXA t2 
-											where t2.cdEstruturaSalarial = t1.cdEstruturaSalarial and t2.cdFaixaSalarial = t1.cdFaixaSalarial 
-											and t2.nrSequenciaFaixa = t1.nrSequenciaFaixa and t2.nrNivelSalarial = t1.nrNivelSalarial)) as i_niveis
+			and  n.nome = t1.dsFaixaSalarial) as i_niveis					
 	from tecbth_delivery.gp001_SALARIOFAIXA t1
 	where exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
 						where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
 						and gs.cdNivelSalarial = t1.nrNivelSalarial
-						and (gs.dsNivelSalarial like 'Nivel' or gs.dsNivelSalarial like 'Valor' or gs.dsNivelSalarial like 'Faixa'))	
-	and exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
-						where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
-						and gs.cdNivelSalarial = t1.nrNivelSalarial - 1
-						and gs.dsNivelSalarial like 'Classe')		
-	order by 3 asc;
+						and ((gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 2) or (gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 1) ) )
+	order by 4 asc;
 
   // *****  Tabela bethadba.niveis
   declare w_i_entidades integer;
@@ -55,17 +49,21 @@ begin
 			t1.cdEstruturaSalarial as planod,
 			t1.cdFaixaSalarial as faixad,
 			t1.sgFaixaSalarial as w_i_clas_niveisd,								
-			w_i_referenciasd = 1,
+			w_i_referenciasd = faixad,
 			t1.vlFaixaSalarial as w_valor,
 			number(*) as w_ordem	
 		from tecbth_delivery.gp001_SALARIOFAIXA t1
 		where exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
 						where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
 						and gs.cdNivelSalarial = t1.nrNivelSalarial
+						and (gs.dsNivelSalarial like 'Nivel' or gs.dsNivelSalarial like 'Faixa'))
+		and exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
+						where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
+						and gs.cdNivelSalarial = t1.nrNivelSalarial - 1
 						and gs.dsNivelSalarial like 'Classe')
-		and planod = w_plano and left(faixad,LENGTH(faixad) -1) = left(w_faixa,LENGTH(faixad) -1)
+		and planod = w_plano and left(faixad,LENGTH(w_faixa)) = w_faixa
 	
- 	  DO
+ 	DO
  	  
 	    message 'Nivel.: '||string(w_i_clas_niveisd)||' i_niveis.: '||string(w_ordem) to client;
 	    if not exists(select 1 from bethadba.clas_niveis where
@@ -76,7 +74,7 @@ begin
 	      insert into bethadba.clas_niveis( i_entidades,i_niveis,i_clas_niveis,i_referencias,valor,ordem) 
 	      values(w_i_entidades,w_i_niveis,w_i_clas_niveisd,w_i_referenciasd,w_valor,w_ordem) 
 	    end if
-	   END FOR;
+	END FOR;
   end loop L_item;
   close cur_conver
 end;
