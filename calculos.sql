@@ -224,7 +224,8 @@ select first tipo_pd,compoe_liq,classif_evento
 	end for;
 end;
 
-//update bethadba.movimentos set compoe_liq = 'N' WHERE i_eventos in (441,4) and i_tipos_proc in (51,52)
+--update bethadba.movimentos set compoe_liq = 'N' WHERE i_eventos in (441,4) and i_tipos_proc in (51,52) and i_funcionarios in (192864)
+--update bethadba.dados_calc set dt_fechamento = dt_pagto, recibo_esocial = cast(i_funcionarios as varchar(15)) + '/' + cast(i_competencias  as varchar(20))
 
 
 update bethadba.dados_calc as t1 
