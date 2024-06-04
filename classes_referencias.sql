@@ -15,7 +15,11 @@ begin
 	where exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
 						where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
 						and gs.cdNivelSalarial = t1.nrNivelSalarial
-						and ((gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 2) or (gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 1) ) )
+						and ((gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 2) or (gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 1) 
+								or (gs.dsNivelSalarial like 'cargo' and not exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
+																																	where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
+																																	and gs.cdNivelSalarial = 3))
+								) )
 	order by 4 asc;
 
   // *****  Tabela bethadba.niveis
@@ -61,7 +65,11 @@ begin
 		and exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
 						where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
 						and gs.cdNivelSalarial = t1.nrNivelSalarial - 1
-						and gs.dsNivelSalarial like 'Classe')
+						and (gs.dsNivelSalarial like 'Classe')
+								or (gs.dsNivelSalarial like 'cargo' and not exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
+																																	where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
+																																	and gs.cdNivelSalarial = 3))
+								)
 		and planod = w_plano and left(w_faixad,LENGTH(w_faixa)) = w_faixa
 	
  	DO

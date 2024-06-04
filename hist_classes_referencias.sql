@@ -12,7 +12,9 @@ begin
    		where ad.antes5 = t1.sgFaixaSalarial and ad.antes6 = t1.cdFaixaSalarial and ad.antes_1 = t1.cdEstruturaSalarial) as w_i_niveis,
 		left(t1.sgFaixaSalarial,1) as w_i_clas_niveis,								
 		w_i_referencias = right(t1.cdFaixaSalarial,3),
-		w_dt_alteracoes = if t1.dtInicioValidade is null then t1.dtreferencia else t1.dtInicioValidade endif,
+		w_dt_alteracoes = (select max(t2.dtreferencia) from tecbth_delivery.gp001_SALARIOFAIXA_HISTORICO t2
+											where t2.cdEstruturaSalarial = t1.cdEstruturaSalarial and t2.nrNivelSalarial = t1.nrNivelSalarial
+											and t2.vlFaixaSalarial = t1.vlFaixaSalarial),
 		t1.vlFaixaSalarial as w_valor,
 		(select first ad.depois_2 from tecbth_delivery.antes_depois ad
    		where ad.antes5 = t1.sgFaixaSalarial and ad.antes6 = t1.cdFaixaSalarial and ad.antes_1 = t1.cdEstruturaSalarial) as w_ordem,
@@ -25,8 +27,13 @@ begin
 	and exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
 				where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
 				and gs.cdNivelSalarial = t1.nrNivelSalarial - 1
-				and gs.dsNivelSalarial like 'Classe')
-	and w_i_niveis is not null;
+				and (gs.dsNivelSalarial like 'Classe')
+						or (gs.dsNivelSalarial like 'cargo' and not exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
+																																	where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
+																																	and gs.cdNivelSalarial = 3))
+				)
+	and w_i_niveis is not null
+	order by 1,2,5 asc;
 
   // *****  Tabela bethadba.niveis
   declare w_i_entidades integer;

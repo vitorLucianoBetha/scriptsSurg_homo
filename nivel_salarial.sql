@@ -13,8 +13,11 @@ begin
     where exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
 						where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
 						and gs.cdNivelSalarial = t1.nrNivelSalarial
-						and ((gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 2) or (gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 1) or (gs.dsNivelSalarial like 'valor' and gs.cdNivelSalarial = 1) ) )
-    order by 1 asc,2 asc, 3 asc;
+						and ((gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 2) or (gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 1) or (gs.dsNivelSalarial like 'valor' and gs.cdNivelSalarial = 1)
+									or (gs.dsNivelSalarial like 'cargo' and not exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
+																																	where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
+																																	and gs.cdNivelSalarial = 3)) 
+																																	));
 
   // *****  Tabela bethadba.niveis
   declare w_i_entidades integer;
@@ -60,7 +63,7 @@ begin
       set w_valor=.01
     end if;
     set w_coeficiente='N';
-   	if w_carga_hor = 0 then set w_carga_hor = 180 end if;
+   	--if w_carga_hor = 0 then set w_carga_hor = 180 end if;
   
     message 'Nivel.: '||string(w_nome)||' i_niveis.: '||string(w_i_niveis) to client;
     if not exists(select 1 from bethadba.niveis where

@@ -38,7 +38,11 @@ begin
 	and exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
 						where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
 						and gs.cdNivelSalarial = t1.nrNivelSalarial
-						and ((gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 2) or (gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 1) or (gs.dsNivelSalarial like 'valor' and gs.cdNivelSalarial = 1) ) )
+						and ((gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 2) or (gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 1) or (gs.dsNivelSalarial like 'valor' and gs.cdNivelSalarial = 1) 
+								or (gs.dsNivelSalarial like 'cargo' and not exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
+																																	where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
+																																	and gs.cdNivelSalarial = 3))
+								))
 	order by 1,2 asc;	
 
   // *****  Tabela bethadba.niveis
@@ -83,7 +87,7 @@ begin
    if w_valor_anterior = 0.0 then
       set w_valor_anterior= 0.01
     end if;
-   	if w_carga_hor = 0 then set w_carga_hor = 180 end if;
+   	--if w_carga_hor = 0 then set w_carga_hor = 180 end if;
     if w_i_motivos = 0 then set w_i_motivos = 5 end if;
   
     message ' i_niveis.: '||string(w_i_niveis) || ' Data.: ' || w_dtCriacao to client;
