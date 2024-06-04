@@ -10,7 +10,7 @@ begin
 	select DISTINCT 1 as w_entidade,
    		(select first ad.depois_1 from tecbth_delivery.antes_depois ad
    		where ad.antes5 = t1.sgFaixaSalarial and ad.antes6 = t1.cdFaixaSalarial and ad.antes_1 = t1.cdEstruturaSalarial) as w_i_niveis,
-		left(t1.sgFaixaSalarial,1) as w_i_clas_niveis,								
+		if isnumeric(left(t1.sgFaixaSalarial,1)) <> 1 then upper(left(t1.sgFaixaSalarial,1)) else upper(left(t1.dsFaixaSalarial,1)) endif as w_i_clas_niveis,								
 		w_i_referencias = right(t1.cdFaixaSalarial,3),
 		w_dt_alteracoes = (select max(t2.dtreferencia) from tecbth_delivery.gp001_SALARIOFAIXA_HISTORICO t2
 											where t2.cdEstruturaSalarial = t1.cdEstruturaSalarial and t2.nrNivelSalarial = t1.nrNivelSalarial
@@ -33,7 +33,7 @@ begin
 																																	and gs.cdNivelSalarial = 3))
 				)
 	and w_i_niveis is not null
-	order by 1,2,5 asc;
+	order by 1,2,3,4,5 asc;
 
   // *****  Tabela bethadba.niveis
   declare w_i_entidades integer;
@@ -91,7 +91,7 @@ begin
 	   	set w_dt_alteracoes_anterior = w_dt_alteracoes;
 	   	set w_valor_anterior = w_valor;
    		
-	    message 'Nivel.: '||string(w_i_clas_niveis)||' i_niveis.: '||string(w_ordem) to client;
+	   message 'Count: ' || string(w_cont) || ' Nivel.: '||string(w_i_clas_niveis) || ' ' || string(w_i_niveis) ||' Ref.: '||string(w_i_referencias) || ' Dt: ' || string(w_dt_alteracoes) to client;
 	   
 		if not exists (select 1 from bethadba.hist_niveis hn where
 			   hn.i_entidades = w_i_entidades and

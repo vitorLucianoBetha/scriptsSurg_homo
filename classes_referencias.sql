@@ -53,7 +53,7 @@ begin
 			t1.cdEstruturaSalarial as planod,
 			t1.cdFaixaSalarial as w_faixad,
 			t1.sgFaixaSalarial as w_i_clas_niveisdd,	
-			left(t1.sgFaixaSalarial,1) as w_i_clas_niveisd,								
+			if isnumeric(left(t1.sgFaixaSalarial,1)) <> 1 then upper(left(t1.sgFaixaSalarial,1)) else upper(left(t1.dsFaixaSalarial,1)) endif as w_i_clas_niveisd,			
 			w_i_referenciasd = right(w_faixad,3),
 			t1.vlFaixaSalarial as w_valor,
 			number(*) as w_ordem	
