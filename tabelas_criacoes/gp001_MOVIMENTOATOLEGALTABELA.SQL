@@ -1,0 +1,22 @@
+CREATE TABLE Folharh.tecbth_delivery.gp001_MOVIMENTOATOLEGALTABELA (
+	CdFundamentacaoLegal int NULL,
+	cdChave varchar(50) NULL,
+	cdTabela smallint NULL,
+	DtInicioValidade timestamp NULL,
+	cdTipoMovimentoAto smallint NULL,
+	SqMovimento smallint NULL,
+	CdTipoEfetividade smallint NULL,
+	CdTipoDocumentoLegal smallint NULL,
+	DtAnoDocumentoLegal int NULL,
+	DtFinalValidade timestamp NULL,
+	CdReferencia varchar(50) NULL,
+	dsObservacao long varchar NULL,
+	dsMovimentoAtoLegal long varchar NULL,
+	cdAtoPessoal smallint NULL,
+	CdVerbaVantagem smallint NULL,
+	PcSubsidio numeric(20,2) NULL,
+	VlSubsidio numeric(20,2) NULL,
+	nrDocumentoLegal varchar(20) NULL,
+	NrOcorrencia int NULL,
+	ID int DEFAULT autoincrement NULL
+);

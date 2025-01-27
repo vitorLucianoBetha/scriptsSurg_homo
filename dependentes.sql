@@ -4,8 +4,7 @@
 --------------------------------------------------
 if  exists (select 1 from sys.sysprocedure where creator = (select user_id from sys.sysuserperms where user_name = current user) and proc_name = 'cnv_dependentes') then
 	drop procedure cnv_dependentes;
-end if
-;
+end if;
 -- BUG BTHSC-7421  as datas finais relacionadas aos dependentes estão incorretas
 begin
 	// *****  Tabela bethadba.dependentes

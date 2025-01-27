@@ -37,3 +37,15 @@ SELECT
 FROM ausencia_with_rownum
 
 commit;
+
+
+INSERT INTO Folharh.bethadba.tipos_afast
+(i_tipos_afast, i_tipos_movpes, descricao, classif, perde_temposerv, busca_var, dias_prev, codigo_tce, dias_lim_rpps, classificacao_esocial)
+VALUES(18, NULL, '18 - Demitido', 8, 'N', 'N', NULL, NULL, 0, NULL);
+
+
+INSERT INTO Folharh.bethadba.tipos_afast
+(i_tipos_afast, i_tipos_movpes, descricao, classif, perde_temposerv, busca_var, dias_prev, codigo_tce, dias_lim_rpps, classificacao_esocial)
+VALUES(19, NULL, '19 - Aposentadoria', 9, N'N', N'N', NULL, NULL, 0, NULL);
+
+

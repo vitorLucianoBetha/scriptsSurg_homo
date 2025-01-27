@@ -98,4 +98,10 @@ begin
   end loop;
 end;
 
-commit
+commit;
+
+
+/*
+as
+(i_ruas, i_ruas_ini, i_ruas_fim, i_cidades, nome, tipo, cep, epigrafe, lei, zona_fiscal, extensao, dia_vcto, i_sefaz)
+VALUES(1, NULL, NULL, 4207106, 'Rua Leoberto Leal', 1, '88320-00', NULL, NULL, NULL, 0.00, NULL, NULL);

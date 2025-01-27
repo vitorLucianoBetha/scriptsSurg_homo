@@ -1,5 +1,4 @@
 
-;
 
 
 
@@ -9,7 +8,6 @@ end if
 ;
 
 
-ROLLBACK;
 CALL bethadba.dbp_conn_gera(1, 2019, 300);
 CALL bethadba.pg_setoption('wait_for_commit','on');
 CALL bethadba.pg_habilitartriggers('off');
@@ -68,7 +66,7 @@ begin
 			set w_i_motivos_altcar=1	
 		end if;
 		--bug BTHSC-8167 Não migrou informação do ato dos cargos
-		select first  NrLeiCargo into w_descricao_i_atos from gp001_CARGO where cdcargo = w_i_cargos;
+		select first  NrLeiCargo into w_descricao_i_atos from tecbth_delivery.gp001_CARGO where cdcargo = w_i_cargos;
 		select first i_atos into w_i_atos from bethadba.atos where num_ato = w_descricao_i_atos;
 		if w_i_concursos not in(0,9999) then			
 			if not exists(select 1 from bethadba.concursos where i_entidades = w_i_entidades and i_concursos = w_i_concursos) then
@@ -140,10 +138,3 @@ begin
 	end for;
 end
 ;
-
-
-
-CALL bethadba.dbp_conn_gera(1, 2019, 300);
-CALL bethadba.pg_setoption('wait_for_commit','on');
-CALL bethadba.pg_habilitartriggers('off');
-COMMIT;

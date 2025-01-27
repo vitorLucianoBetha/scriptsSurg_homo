@@ -23,3 +23,33 @@ CALL bethadba.pg_setoption('wait_for_commit','on');
 CALL bethadba.pg_habilitartriggers('off');
 COMMIT;
 
+
+
+INSERT INTO Folharh.bethadba.motivos_altsal
+(i_motivos_altsal, descricao, codigo_tce)
+VALUES(1, 'Admissão                                ', 1);
+INSERT INTO Folharh.bethadba.motivos_altsal
+(i_motivos_altsal, descricao, codigo_tce)
+VALUES(2, 'Inflação Mensal                         ', 2);
+INSERT INTO Folharh.bethadba.motivos_altsal
+(i_motivos_altsal, descricao, codigo_tce)
+VALUES(3, 'Promoção de Cargo                       ', 3);
+INSERT INTO Folharh.bethadba.motivos_altsal
+(i_motivos_altsal, descricao, codigo_tce)
+VALUES(4, 'Progressão de Faixa                     ', 4);
+INSERT INTO Folharh.bethadba.motivos_altsal
+(i_motivos_altsal, descricao, codigo_tce)
+VALUES(5, 'Dissídio Coletivo                       ', 5);
+INSERT INTO Folharh.bethadba.motivos_altsal
+(i_motivos_altsal, descricao, codigo_tce)
+VALUES(6, 'Folha Simulada                          ', 6);
+INSERT INTO Folharh.bethadba.motivos_altsal
+(i_motivos_altsal, descricao, codigo_tce)
+VALUES(7, 'Promoção                                ', 7);
+INSERT INTO Folharh.bethadba.motivos_altsal
+(i_motivos_altsal, descricao, codigo_tce)
+VALUES(8, 'Reajuste Salarial                       ', 8);
+INSERT INTO Folharh.bethadba.motivos_altsal
+(i_motivos_altsal, descricao, codigo_tce)
+VALUES(9000, 'Cálc. Sal. Retroat.                     ', 9000);
+

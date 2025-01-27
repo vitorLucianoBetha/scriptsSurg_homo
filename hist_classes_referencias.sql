@@ -8,28 +8,25 @@ COMMIT;
 begin
   declare cur_conver dynamic scroll cursor for
 	select DISTINCT 1 as w_entidade,
-   		(select  cn.i_niveis from bethadba.clas_niveis cn 
-   		where cn.i_clas_niveis = t1.sgFaixaSalarial and cn.i_referencias = t1.cdFaixaSalarial 
-   		and t1.cdEstruturaSalarial = (select n.i_planos_salariais from bethadba.niveis n where cn.i_niveis = n.i_niveis)) as w_i_niveis,
+   		(select i_niveis from bethadba.niveis where nome = dsfaixasalarial and i_niveis = cdfaixasalarial) as w_i_niveis,
 		t1.sgFaixaSalarial as w_i_clas_niveis,								
 		w_i_referencias = t1.cdFaixaSalarial,
 		w_dt_alteracoes = if t1.dtInicioValidade is null then t1.dtreferencia else t1.dtInicioValidade endif,
 		t1.vlFaixaSalarial as w_valor,
-		(select  cn.ordem from bethadba.clas_niveis cn 
+		(select first cn.ordem from bethadba.clas_niveis cn 
    		where cn.i_clas_niveis = t1.sgFaixaSalarial and cn.i_referencias = t1.cdFaixaSalarial 
    		and t1.cdEstruturaSalarial = (select n.i_planos_salariais from bethadba.niveis n where cn.i_niveis = n.i_niveis)) as w_ordem,
    		t1.cdEstruturaSalarial as w_plano
 	from tecbth_delivery.gp001_SALARIOFAIXA_HISTORICO t1
-	where exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
+	where not exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
 				where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
 				and gs.cdNivelSalarial = t1.nrNivelSalarial
 				and (gs.dsNivelSalarial like 'Nivel' or gs.dsNivelSalarial like 'Faixa'))
-	and exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
+	and NOT exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
 				where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
 				and gs.cdNivelSalarial = t1.nrNivelSalarial - 1
 				and gs.dsNivelSalarial like 'Classe')
 	and w_i_niveis is not null;
-
   // *****  Tabela bethadba.niveis
   declare w_i_entidades integer;
   declare w_i_niveis integer;
@@ -120,5 +117,4 @@ begin
   end loop L_item;
   close cur_conver
 end;
-
-rollback;
+commit;

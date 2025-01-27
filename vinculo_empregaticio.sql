@@ -32,7 +32,7 @@ begin
 		    gtv.CD_TIPO_ATIVO_SIAP as w_codigo_tce
 		from tecbth_delivery.gp001_vinculoempregaticio vp
 		left join tecbth_delivery.gp001_eSocial_Categoria_Trabalhador et on vp.cdCategoriaTrabalhador_eSocial = et.PKID
-		left join tecbth_delivery.gp001_TCPR_VINCULO_EMPREGATICIO gtv on gtv.CD_VINCULO_EMPREGATICIO = vp.CdVinculoEmpregaticio
+		left join tecbth_delivery.gp001_TCSC_VINCULO_EMPREGATICIO gtv on gtv.CD_VINCULO_EMPREGATICIO = vp.CdVinculoEmpregaticio
 	do
 		// *****  Inicializa Variaveis
 		set w_i_motivos_resc=null;
@@ -100,4 +100,5 @@ END);
 			values('V',w_i_entidades,w_i_vinculos,null,null,w_i_vinculos,null,null,null,null);
 		end if;
 	end for;
-end
+end;
+commit;

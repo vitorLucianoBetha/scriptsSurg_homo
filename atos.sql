@@ -11,10 +11,10 @@ begin
 	declare w_num_diariooficial char(10);
 	
 	ooLoop: for oo as cnv_atos dynamic scroll cursor for
-		select 12 as w_i_tipos_atos,nrleicargo as w_NrDocumentoLegal,coalesce(dtleicargo,'2000-01-01') as w_DtAnoDocumentoLegal,coalesce(dtleicargo,'2000-01-01') as w_dt_inicial,
+		select 4 as w_i_tipos_atos,nrleicargo as w_NrDocumentoLegal,coalesce(dtleicargo,'2000-01-01') as w_DtAnoDocumentoLegal,coalesce(dtleicargo,'2000-01-01') as w_dt_inicial,
 			   coalesce(dtleicargo,'2000-01-01') as w_dt_vigorar,nrleicargo as w_ementa,dtleicargo as w_dt_publicacao,dtleicargo as w_DtAnoOficial,nrleicargo as w_NrOficial,
 			   null as w_num_proc_tce,null as w_num_resolucao,null as w_i_fontes_divulga 
-		from tecbth_delivery.gp001_CARGO
+		from tecbth_delivery.gp001_CARGO where w_NrDocumentoLegal <> ''
 	do
 		// *****  Inicializa Variaveis
 		set w_i_atos=null;
@@ -44,3 +44,4 @@ begin
 
 	end for;
 end;
+commit;

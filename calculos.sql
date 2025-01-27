@@ -42,7 +42,7 @@ begin
 			cdVerba as w_cdVerba,inRetificacao as w_inRetificacao,dtPagamento as w_dtPagamento,fu_convdecimal(tira_caracter_1(vlComplemento),0) as w_vlr_inf,
 			cast(vlMensal as decimal(12,2)) as w_vlr_calc,cast(vlAuxiliar as decimal(12,2)) as w_vlAuxiliar,
 			cast(vlIntegral as decimal(12,2)) as w_vlIntegral 
-		from tecbth_delivery.gp001_fichafinanceira where dtCompetencia > '2020-01-01'
+		from tecbth_delivery.gp001_fichafinanceira 
 	do
 		
 		// *****  Tabela bethadba.movimentos

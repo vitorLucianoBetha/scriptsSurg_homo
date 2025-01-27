@@ -497,6 +497,6 @@ begin
 	end for;
 end
 ;
-
+COMMIT;
 
 

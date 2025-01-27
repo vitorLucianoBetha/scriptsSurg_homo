@@ -8,3 +8,6 @@ commit
 
 
 rollback;
+
+
+UPDATE BETHADBA.tipos_movpes SET classif = 1 WHERE i_tipos_movpes = 1

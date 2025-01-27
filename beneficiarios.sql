@@ -1,0 +1,30 @@
+insert into bethadba.beneficiarios 
+select 
+1 as i_entidades,
+cdMatricula as i_funcionarios ,
+1 as i_entidades_inst,
+2550 as i_instituidor,
+null as i_atos,
+'V' as duracao_ben,
+NULL AS dt_vencto,
+0 as perc_recebto,
+1 as config,
+null as alvara,
+null as dt_alvara,
+'0' as situacao,
+dtRescisao as dt_cessacao,
+'Obito' as motivo_cessacao,
+'N' as parecer_interno,
+'Obito' as motivo_inicio,
+1 as origem_beneficio,
+nrBeneficio as nr_beneficio,
+'N' AS acao_judicial,
+cdMatricula as matricula_instituidor,
+null as cnpj_instituidor,
+'0601' AS tipo_beneficio,
+NULL AS data_recebido,
+null as cnpj_ente_sucedido,
+null as observacao_beneficio,
+null as nr_beneficio_anterior 
+from tecbth_delivery.gp001_FUNCIONARIO 
+where cdCargo = 2

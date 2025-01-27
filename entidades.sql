@@ -178,6 +178,9 @@ end
 		--BUG BTHSC-8215 /BTHSC-8209 
 
 
+-- BTHSC-132832
+update bethadba.hist_entidades set i_cnae_preponderante = '8411600'
+
 	
 -- Ajustes
 
@@ -195,6 +198,12 @@ update bethadba.hist_parametros_previd set classificacao_tributaria = 99
 
 		
 INSERT INTO Folharh.bethadba.hist_parametros_previd
-(i_entidades, i_competencias, cod_terceiros, perc_terceiros, perc_inss, perc_acid_trab, cod_rat, processo_rat, tipo_processo_rat, cod_fpas, cod_previdencia, cod_gps, perc_isencao, cod_gps_cat15, cod_gps_obra, cod_rat_obra, perc_acid_trab_obra, fap, processo_fap, tipo_processo_fap, qualificacao_isencao, numero_certificado, dt_emissao, dt_vencto, numero_renovacao, dt_protocolo_renovacao, dt_publicacao_dou, numero_pagina_dou, classificacao_tributaria, codigo_suspensao_rat, codigo_suspensao_fap)
-VALUES(1, '1990-01-01', '0000', 0.00, 0.00, 1.00, '1    ', '1', 1, '639', '1', '2305', 1.00, '2402', '2402', '1    ', 1.00, 1.0000, '1', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 80, 1, 1);
+(i_entidades, i_competencias, cod_terceiros, perc_terceiros, perc_inss, perc_acid_trab, cod_rat, processo_rat, tipo_processo_rat, cod_fpas, cod_previdencia, cod_gps, perc_isencao, cod_gps_cat15, cod_gps_obra, cod_rat_obra, perc_acid_trab_obra, fap, processo_fap, tipo_processo_fap, qualificacao_isencao, numero_certificado, dt_emissao, dt_vencto, numero_renovacao, dt_protocolo_renovacao, dt_publicacao_dou, numero_pagina_dou, classificacao_tributaria, codigo_suspensao_rat, codigo_suspensao_fap, desoneracao_folha, perc_inss_aut)
+VALUES(1, '1990-01-01', '0000', 0.00, 0.00, 1.00, '1    ', '1', 1, '639', '1', '2305', 1.00, '2402', '2402', '1    ', 1.00, 1.0000, '1', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 80, 1, 1, '0', 0);
+
+
  
+
+ INSERT INTO Folharh.tecbth_delivery.gp001_RolEmpresas
+(CdEmpresa, NaEmpresa, NmEmpresa, nmFisicoDB)
+VALUES(1, N'Instituto de Previdência Municipal Ilhota', N'Instituto de Previdencia ilhota', NULL);

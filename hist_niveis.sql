@@ -8,10 +8,7 @@ COMMIT;
 begin
   declare cur_conver dynamic scroll cursor for
 	select DISTINCT 1,
-			(select first n.i_niveis from bethadba.niveis n where n.i_planos_salariais = t1.cdEstruturaSalarial 
-			and  n.nome = (select t2.dsFaixaSalarial from tecbth_delivery.gp001_SALARIOFAIXA t2 
-											where t2.cdEstruturaSalarial = t1.cdEstruturaSalarial and t2.cdFaixaSalarial = t1.cdFaixaSalarial 
-											and t2.nrSequenciaFaixa = t1.nrSequenciaFaixa and t2.nrNivelSalarial = t1.nrNivelSalarial)) as i_niveis,	
+			(select i_niveis from bethadba.niveis where nome = dsfaixasalarial and i_niveis = cdfaixasalarial) as i_niveis,	
 			dtCriacao = if (select datetime(max(t3.dtInicioValidade)) from tecbth_delivery.gp001_SALARIOFAIXA_HISTORICO t3 
 									where t1.cdEstruturaSalarial = t3.cdEstruturaSalarial and t1.vlFaixaSalarial = t3.vlFaixaSalarial
 									and t1.cdFaixaSalarial = t3.cdFaixaSalarial and t1.nrSequenciaFaixa = t3.nrSequenciaFaixa) is null then
@@ -35,7 +32,7 @@ begin
 			'N' as coeficiente_anterior
 	from tecbth_delivery.gp001_SALARIOFAIXA_HISTORICO t1  
 	where i_niveis is not null
-	and exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
+	and not exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
 						where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
 						and gs.cdNivelSalarial = t1.nrNivelSalarial
 						and ((gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 2) or (gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 1) or (gs.dsNivelSalarial like 'valor' and gs.cdNivelSalarial = 1) ) )
@@ -98,7 +95,10 @@ begin
   close cur_conver
 end;
 
-rollback
+commit;
+ 
+
+
 
 --insert into bethadba.hist_niveis on existing skip 
 

@@ -3,7 +3,7 @@ CALL bethadba.pg_setoption('wait_for_commit', 'on');
 CALL bethadba.pg_habilitartriggers('off');
 COMMIT;
 
-
+alter table gp001_tipodesligamento add (i_motivos_resc integer);
 
 insert into bethadba.motivos_resc(i_motivos_resc,i_tipos_movpes,descricao,dispensados,sair_fumbesc,num_caged,motivo_rais,cod_saque_fgts,movto_gfip,i_tipos_afast,
 								  i_tipos_movpes_subst)on existing skip
@@ -27,10 +27,6 @@ set i_motivos_resc = if CdDesligamento = 1 then 2 else
                       if CdDesligamento = 13 then 22 else 
                       if CdDesligamento = 14 then 23 endif endif endif endif endif endif endif endif endif endif endif endif endif endif
 where i_motivos_resc is null;
-commit
-;
-
-update gp001_tipodesligamento set i_motivos_apos = 3 where CdDesligamento = 4;
 commit
 ;
 

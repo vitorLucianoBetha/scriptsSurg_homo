@@ -18,12 +18,13 @@ CALL bethadba.pg_setoption('wait_for_commit','on');
 CALL bethadba.pg_habilitartriggers('off');
 COMMIT;
 
+
 insert into bethadba.tabelas 
 SELECT 
 
 number(*) +1000as i_tabelas,
-convert(varchar(7), dtReferencia, 15) as dt_vigencia_ini,
-convert(varchar(7), dtReferencia, 15) as dt_vigencia_fin,
+convert(varchar(10), gp001_inss.dtReferencia, 15) as dt_vigencia_ini,
+convert(varchar(10), gp001_inss.dtReferencia, 15) as dt_vigencia_fin,
 vlFinalIntervalo as vlr_sal_min,
 VlDependente as vlr_dependente,
 0 as vlr_min_irrf,
@@ -36,7 +37,20 @@ vlFinalIntervalo as vlr_piso_sal,
 5000.00 as vlr_teto_salarial,
 null as perc_sest_autonomo,
 null as perc_senat_autonomo,
-null as i_atos
-from  gp001_inss ,gp001_IR
-where gp001_inss.cdTabelaIR = gp001_IR.cdTabelaIR
-ORDER BY dtReferencia DESC, sqIntervalo
+null as i_atos,
+null as vlr_deducao_simplificada,
+null as vlr_parcela_isenta
+from  tecbth_delivery.gp001_inss ,tecbth_delivery.gp001_IR
+where gp001_IR.cdTabelaIR =  1 
+ORDER BY gp001_inss.dtReferencia DESC, sqIntervalo
+
+
+
+delete from bethadba.tipos_afast 
+delete from bethadba.motivos_apos
+delete from bethadba.motivos_resc
+delete from bethadba.adic_tipos_afast
+delete from bethadba.tipos_afast 
+delete from bethadba.canc_ferias
+delete from bethadba.config_canc_ferias
+

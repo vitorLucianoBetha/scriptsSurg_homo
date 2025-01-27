@@ -110,7 +110,7 @@ begin
 			
 		select cdfaixasalarial 
 		into w_cdfaixasalarial
-	  from gp001_salariofaixa as salariofaixa
+	  from tecbth_delivery.gp001_salariofaixa as salariofaixa
 		where nrsequenciafaixa    = w_nrsequenciafaixa
 		  and cdestruturasalarial = w_cdestruturasalarial
 		  and cdgrupofaixasalarial = w_cdgrupofaixasalarial
@@ -174,3 +174,5 @@ on c.i_cargos = c1.CdCargo
 set c.i_cbo = c1.cdGrupoCboCargo 
 where c.i_cbo is null
 commit;
+
+

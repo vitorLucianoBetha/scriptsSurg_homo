@@ -6,7 +6,7 @@ end if
 begin
 	declare cnv_ferias dynamic scroll cursor for 
 		select 1 as w_i_entidades,
-					left(cdMatricula, length(cdMatricula) - 1) as w_CdMatricula,
+					cdMatricula as w_CdMatricula,
 					Sqcontrato as w_Sqcontrato,
 					DtInicioPeriodo as w_DtInicioPeriodo,
 					date(DtInicioConcessao) as w_dt_gozo_ini,
@@ -121,7 +121,7 @@ begin
 			message 'Ent.: '||w_i_entidades||' Fun.: '||w_i_funcionarios||' Fer.: '||w_i_ferias||' Per.: '||w_i_periodos to client;
 			
 			insert into bethadba.ferias(i_entidades,i_funcionarios,i_ferias,i_periodos,i_ferias_progr,i_atos,dt_gozo_ini,dt_gozo_fin,num_dias_abono,comp_abono,saldo_dias,desc_faltas,
-									    num_faltas,num_dias_desc,num_dias_dir,desc_ferias,adiant_13sal,pagto_ferias)on existing skip
+									    num_faltas,num_dias_desc,num_dias_dir,desc_ferias,adiant_13sal,pagto_ferias)
 			values (w_i_entidades,w_i_funcionarios,w_i_ferias,w_i_periodos,null,null,w_dt_gozo_ini,w_dt_gozo_fin,w_num_dias_abono,w_comp_abono,30,'N',
 					0,w_num_dias_desc,w_num_dias_dir,0,'N',1);				
 		
@@ -139,8 +139,7 @@ begin
   close cnv_ferias
 end; 
 
-rollback;
-CALL bethadba.dbp_conn_gera(1, 2019, 300);
-CALL bethadba.pg_setoption('wait_for_commit','on');
-CALL bethadba.pg_habilitartriggers('off');
-COMMIT;
+commit;
+
+
+

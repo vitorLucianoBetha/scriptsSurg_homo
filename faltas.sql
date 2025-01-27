@@ -91,3 +91,4 @@ begin
 		end if;
 	end for;
 end;
+commit;

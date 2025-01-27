@@ -124,6 +124,6 @@ values (6,w_i_entidades,w_i_funcionarios,w_DtAdmissao,null,null,null,null,null,w
 end;
 
 
-
+commit;
 
 

@@ -43,3 +43,8 @@ CALL bethadba.dbp_conn_gera(1, 2019, 300);
 CALL bethadba.pg_setoption('wait_for_commit','on');
 CALL bethadba.pg_habilitartriggers('off');
 COMMIT;
+
+
+/*
+
+INSERT tecbth_delivery.gp001_HISTORICOAFASTAMENTO (cdCID, DtGravacao, CdMatricula, SqContrato, DtInicioAfastamento, DtFimAfastamento, CdMotivoAfastamento, dsObservacao, inParticipaSefip, cdEspecieBeneficioINSS, nrBeneficioINSS, DsObservacoes, tpAcidTransito, nmEmit, IdeOC, NrOC, UFOC, InfOnusRemun, inAfastConcomitante, nrProcJudBeneficio, tpProcessoJudBeneficio, codMotAfasteSocialAnt, inGerouBeneficio, UId, UIdAfastamentoInterrupcaoFerias, AfastamentoParaInterrupcaoFerias, indRemunCargo, cnpjMandElet, mtvSuspensao, dsSuspensao) VALUES ('', CAST('2015-09-08 00:00:00.000' AS DateTime), 1465, 1, CAST('2015-07-01 00:00:00.000' AS DateTime), CAST('2015-07-31 00:00:00.000' AS DateTime), 5, ' ', -1, 0, 0, '', 0, ' ', 0, ' ', ' ', 0, 0, ' ', 0, 0, 0, '0c0f8a7a-755c-41a6-945d-3c4470f68c17', NULL, NULL, NULL, NULL, NULL, NULL)

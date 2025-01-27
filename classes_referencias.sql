@@ -10,9 +10,9 @@ begin
 	select 1, t1.cdEstruturaSalarial as plano,
 			t1.cdFaixaSalarial as faixa,
 			(select first n.i_niveis from bethadba.niveis n where n.i_planos_salariais = t1.cdEstruturaSalarial 
-			and  n.nome = t1.dsFaixaSalarial) as i_niveis					
+			and  n.nome = t1.dsFaixaSalarial and n.i_niveis = t1.cdFaixaSalarial) as i_niveis					
 	from tecbth_delivery.gp001_SALARIOFAIXA t1
-	where exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
+	where not exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
 						where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
 						and gs.cdNivelSalarial = t1.nrNivelSalarial
 						and ((gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 2) or (gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 1) ) )
@@ -53,11 +53,11 @@ begin
 			t1.vlFaixaSalarial as w_valor,
 			number(*) as w_ordem	
 		from tecbth_delivery.gp001_SALARIOFAIXA t1
-		where exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
+		where not exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
 						where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
 						and gs.cdNivelSalarial = t1.nrNivelSalarial
 						and (gs.dsNivelSalarial like 'Nivel' or gs.dsNivelSalarial like 'Faixa'))
-		and exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
+		and not exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
 						where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
 						and gs.cdNivelSalarial = t1.nrNivelSalarial - 1
 						and gs.dsNivelSalarial like 'Classe')
@@ -78,3 +78,5 @@ begin
   end loop L_item;
   close cur_conver
 end;
+
+commit;

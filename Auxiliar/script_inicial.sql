@@ -1,3 +1,8 @@
+INSERT INTO Folharh.bethadba.licenca
+(i_sistema, cliente, ctrver, dataexp, diaslib, expsen, numcad, numusers, senper, serie, control, i_entidade, versao)
+VALUES(300, 'ENTIDADE - PADRAO', '2', '2026-01-01', 31, '0', 999999, 999, '', '300016692061439', 'CXCXTEFIHPGR', 1, 3);
+
+
 --24/10/2023 18:44
 --------------------------------------------------
 -- 01) Tabelas Auxiliares

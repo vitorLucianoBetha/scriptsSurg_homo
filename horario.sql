@@ -116,3 +116,27 @@ VALUES(1, 8, 'SETRAN                                                            
 INSERT INTO Folharh.bethadba.horarios_ponto
 (i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial)
 VALUES(1, 9, 'Vigia Diurno 12/36                                                                                  ', NULL, '', 'L', '00:10:00.000', NULL, NULL, 10, NULL, 1, 'S');
+
+
+
+
+
+
+/-- ILHOTA PREV ---/
+
+
+INSERT INTO Folharh.bethadba.horarios_ponto
+(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial)
+VALUES(1, 1, 'Horario Normal', NULL, 'N', 'L', '00:10:00.000', NULL, NULL, 10, NULL, 1, 'S');
+INSERT INTO Folharh.bethadba.horarios_ponto
+(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial)
+VALUES(1, 2, 'Horário 100', NULL, 'N', 'L', '00:10:00.000', NULL, NULL, 10, NULL, 1, 'S');
+INSERT INTO Folharh.bethadba.horarios_ponto
+(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial)
+VALUES(1, 3, 'Horario 6 horas', NULL, 'N', 'L', '00:10:00.000', NULL, NULL, 10, NULL, 1, 'S');
+INSERT INTO Folharh.bethadba.horarios_ponto
+(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial)
+VALUES(1, 4, 'Horário 220', NULL, 'N', 'L', '00:10:00.000', NULL, NULL, 10, NULL, 1, 'S');
+INSERT INTO Folharh.bethadba.horarios_ponto
+(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial)
+VALUES(1, 5, 'Sem Horário', NULL, 'N', 'L', '00:10:00.000', NULL, NULL, 10, NULL, 1, 'S');

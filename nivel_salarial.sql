@@ -7,10 +7,10 @@ begin
       t1.cdFaixaSalarial,
       t1.vlFaixaSalarial,
       t1.nrHorasReferencia,
-      date(t1.dtInicioValidade),
-      number(*) AS CODIGO      
+      isnull(date(t1.dtInicioValidade), getdate()),
+      cdFaixaSalarial AS CODIGO      
     from tecbth_delivery.gp001_salariofaixa  as t1
-    where exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
+    where not exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
 						where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
 						and gs.cdNivelSalarial = t1.nrNivelSalarial
 						and ((gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 2) or (gs.dsNivelSalarial like 'Classe' and gs.cdNivelSalarial = 1) or (gs.dsNivelSalarial like 'valor' and gs.cdNivelSalarial = 1) ) )
@@ -73,9 +73,7 @@ begin
   end loop L_item;
   close cur_conver
 end;
+commit;
 
 
---insert into bethadba.hist_niveis on existing skip 
 
---select distinct 1,(select i_niveis from bethadba.niveis where nome = cdfaixasalarial ) as i_niveis,dtiniciovalidade,1,vlfaixasalarial,vlfaixasalarial as novo,100,1,0,null,(select carga_hor from bethadba.niveis where nome = cdfaixasalarial ) as carga, 
---'N','N' from tecbth_delivery.gp001_SALARIOFAIXA_HISTORICO where i_niveis is not null 
