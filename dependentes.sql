@@ -51,18 +51,16 @@ AND d.CdDependente = dv.CdDependente
 		and antes_1 = w_i_entidades 
 		and	antes_2 = w_CdPessoaDependente;
 
-		if w_cdGrauDependencia = 11 then
-			set w_grau=2
-		elseif w_cdGrauDependencia in(21,22,23) then
+		if w_cdGrauDependencia = 1 then
 			set w_grau=1
-		elseif w_cdGrauDependencia in(24,25) then
-			set w_grau=5
-		elseif w_cdGrauDependencia = 31 then
+		elseif w_cdGrauDependencia in(2) then
+			set w_grau=2
+		elseif w_cdGrauDependencia in(3) then
 			set w_grau=3
-		elseif w_cdGrauDependencia = 32 then
-			set w_grau=5
-		elseif w_cdGrauDependencia in(41,42,51) then
-			set w_grau=8
+		elseif w_cdGrauDependencia = 8 then
+			set w_grau=6
+		elseif w_cdGrauDependencia = 11 then
+			set w_grau=7
 		else
 			set w_grau=9
 		end if;

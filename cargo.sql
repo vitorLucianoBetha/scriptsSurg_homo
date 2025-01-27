@@ -152,7 +152,7 @@ begin
 	end for;
 end
 ;
-
+/*
 update bethadba.hist_cargos_cadastro hc 
 left join tecbth_delivery.gp001_cargo c 
 on hc.i_cargos = c.cdCargo 

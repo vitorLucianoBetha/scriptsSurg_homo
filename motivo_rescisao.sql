@@ -1,9 +1,16 @@
+CALL bethadba.dbp_conn_gera(1, 2019, 300);
+CALL bethadba.pg_setoption('wait_for_commit', 'on');
+CALL bethadba.pg_habilitartriggers('off');
+COMMIT;
+
+
+
 insert into bethadba.motivos_resc(i_motivos_resc,i_tipos_movpes,descricao,dispensados,sair_fumbesc,num_caged,motivo_rais,cod_saque_fgts,movto_gfip,i_tipos_afast,
 								  i_tipos_movpes_subst)on existing skip
-select number(*)+15,null,DsDesligamento,5,'N',CdCaged,CdRais,null,null,7,null from tecbth_delivery.gp001_tipodesligamento 
+select cdDesligamento,null,DsDesligamento,5,'N',CdCaged,CdRais,null,null,7,null from tecbth_delivery.gp001_tipodesligamento 
 
 ;
-alter table gp001_tipodesligamento add (i_motivos_resc integer);
+
 update gp001_tipodesligamento 
 set i_motivos_resc = if CdDesligamento = 1 then 2 else
                       if CdDesligamento = 2 then 1 else  
@@ -22,7 +29,7 @@ set i_motivos_resc = if CdDesligamento = 1 then 2 else
 where i_motivos_resc is null;
 commit
 ;
-alter table gp001_tipodesligamento add i_motivos_apos integer;
+
 update gp001_tipodesligamento set i_motivos_apos = 3 where CdDesligamento = 4;
 commit
 ;

@@ -35,3 +35,5 @@ SELECT
     'N' AS busca_var,
     NULL AS dias_prev
 FROM ausencia_with_rownum
+
+commit;

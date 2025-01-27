@@ -1,3 +1,8 @@
+CALL bethadba.dbp_conn_gera(1, 2019, 300);
+CALL bethadba.pg_setoption('wait_for_commit', 'on');
+CALL bethadba.pg_habilitartriggers('off');
+COMMIT;
+
 
 begin
 	// *****  Tabela bethadba.movimentos
@@ -37,7 +42,7 @@ begin
 			cdVerba as w_cdVerba,inRetificacao as w_inRetificacao,dtPagamento as w_dtPagamento,fu_convdecimal(tira_caracter_1(vlComplemento),0) as w_vlr_inf,
 			cast(vlMensal as decimal(12,2)) as w_vlr_calc,cast(vlAuxiliar as decimal(12,2)) as w_vlAuxiliar,
 			cast(vlIntegral as decimal(12,2)) as w_vlIntegral 
-		from tecbth_delivery.gp001_fichafinanceira 
+		from tecbth_delivery.gp001_fichafinanceira where dtCompetencia > '2020-01-01'
 	do
 		
 		// *****  Tabela bethadba.movimentos
@@ -119,7 +124,7 @@ begin
 
 
 	
-			if not w_cdVerba = any(select  evento from tecbth_delivery.evento_aux where tipo_pd = 'F' and w_i_entidades = w_i_entidades) then
+			if not w_cdVerba = any(select   evento from tecbth_delivery.evento_aux where tipo_pd = 'F' and w_i_entidades = w_i_entidades  ) then
 				if not exists(select distinct  1 from tecbth_delivery.evento_aux where evento = w_cdVerba and retificacao = w_inRetificacao and w_i_entidades = w_i_entidades) then
 					if w_inRetificacao in('C','D') then
 						select   evento,nome,tipo_pd,taxa,unidade,sai_rais,compoe_liq,compoe_hmes,digitou_form,classif_evento 
@@ -128,7 +133,8 @@ begin
 						where evento = w_cdVerba 
 						and retificacao = 'B' 
 						and resc_mov = 'N' 
-						and i_entidades = w_i_entidades;
+						and i_entidades = w_i_entidades
+                        and i_eventos = w_i_eventos;
 						-- AJUSTE
 					
 						
@@ -216,7 +222,7 @@ select first tipo_pd,compoe_liq,classif_evento
 				
 				message 'Ent.: '||w_i_entidades||' Tip.: '||w_i_tipos_proc||' Com.: '||w_i_competencias||' Pro.: '||w_i_processamentos||' Fun.: '||w_i_funcionarios||' Eve.: '||w_i_eventos||
 						' Vlr. Inf.: '||w_vlr_inf||' Vlr. Cal.: '||w_vlr_calc to client;
-                insert into bethadba.movimentos(i_entidades,i_tipos_proc,i_competencias,i_processamentos,i_funcionarios,i_eventos,vlr_inf,vlr_calc,tipo_pd,compoe_liq,classif_evento,mov_resc) 
+                insert into bethadba.movimentos(i_entidades,i_tipos_proc,i_competencias,i_processamentos,i_funcionarios,i_eventos,vlr_inf,vlr_calc,tipo_pd,compoe_liq,classif_evento,mov_resc) on existing skip
 		    	values (w_i_entidades,w_i_tipos_proc,w_i_competencias,w_i_processamentos,w_i_funcionarios,w_i_eventos,w_vlr_inf,w_vlr_calc,w_tipo_pd,w_compoe_liq,w_classif_evento,w_mov_resc);
 		    	 
 			end if;
@@ -249,4 +255,3 @@ set vlr_proventos = (select coalesce(sum(vlr_calc),0)
 					 and t2.compoe_liq = 'S');
 
 commit;
-

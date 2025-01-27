@@ -1,5 +1,5 @@
 insert into bethadba.tipos_atos(i_tipos_atos,nome,classif,gera_tc)
-select CdTipoDocumentoLegal+10,DsTipoDocumentoLegal,
+select distinct CdTipoDocumentoLegal+10,DsTipoDocumentoLegal,
 if DsTipoDocumentoLegal like '%decre%' then 1 else
 if DsTipoDocumentoLegal like '%Port%' then 4 else
 if DsTipoDocumentoLegal like '%Resol%' then 5 else
@@ -17,3 +17,5 @@ if DsTipoDocumentoLegal like '%term%poss%' then 14  endif endif endif endif endi
 where CdTipoDocumentoLegal != 0;  
 commit
 ; 
+
+
