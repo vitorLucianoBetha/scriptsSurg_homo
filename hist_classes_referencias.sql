@@ -8,6 +8,7 @@ COMMIT;
 begin
   declare cur_conver dynamic scroll cursor for
 	select DISTINCT 1 as w_entidade,
+<<<<<<< HEAD
    		(select i_niveis from bethadba.niveis where nome = dsfaixasalarial and i_niveis = cdfaixasalarial) as w_i_niveis,
 		t1.sgFaixaSalarial as w_i_clas_niveis,								
 		w_i_referencias = t1.cdFaixaSalarial,
@@ -16,6 +17,18 @@ begin
 		(select first cn.ordem from bethadba.clas_niveis cn 
    		where cn.i_clas_niveis = t1.sgFaixaSalarial and cn.i_referencias = t1.cdFaixaSalarial 
    		and t1.cdEstruturaSalarial = (select n.i_planos_salariais from bethadba.niveis n where cn.i_niveis = n.i_niveis)) as w_ordem,
+=======
+   		(select first ad.depois_1 from tecbth_delivery.antes_depois ad
+   		where ad.antes5 = t1.sgFaixaSalarial and ad.antes6 = t1.cdFaixaSalarial and ad.antes_1 = t1.cdEstruturaSalarial) as w_i_niveis,
+		if isnumeric(left(t1.sgFaixaSalarial,1)) <> 1 then upper(left(t1.sgFaixaSalarial,1)) else upper(left(t1.dsFaixaSalarial,1)) endif as w_i_clas_niveis,								
+		w_i_referencias = right(t1.cdFaixaSalarial,3),
+		w_dt_alteracoes = (select max(t2.dtreferencia) from tecbth_delivery.gp001_SALARIOFAIXA_HISTORICO t2
+											where t2.cdEstruturaSalarial = t1.cdEstruturaSalarial and t2.nrNivelSalarial = t1.nrNivelSalarial
+											and t2.vlFaixaSalarial = t1.vlFaixaSalarial),
+		t1.vlFaixaSalarial as w_valor,
+		(select first ad.depois_2 from tecbth_delivery.antes_depois ad
+   		where ad.antes5 = t1.sgFaixaSalarial and ad.antes6 = t1.cdFaixaSalarial and ad.antes_1 = t1.cdEstruturaSalarial) as w_ordem,
+>>>>>>> c97398bc925cc16b8350ae8ae8768ee05d6db443
    		t1.cdEstruturaSalarial as w_plano
 	from tecbth_delivery.gp001_SALARIOFAIXA_HISTORICO t1
 	where not exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
@@ -25,8 +38,19 @@ begin
 	and NOT exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
 				where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
 				and gs.cdNivelSalarial = t1.nrNivelSalarial - 1
+<<<<<<< HEAD
 				and gs.dsNivelSalarial like 'Classe')
 	and w_i_niveis is not null;
+=======
+				and (gs.dsNivelSalarial like 'Classe')
+						or (gs.dsNivelSalarial like 'cargo' and not exists (select 1 from tecbth_delivery.gp001_SALARIOESTRUTURANIVEL gs
+																																	where gs.cdEstruturaSalarial = t1.cdEstruturaSalarial
+																																	and gs.cdNivelSalarial = 3))
+				)
+	and w_i_niveis is not null
+	order by 1,2,3,4,5 asc;
+
+>>>>>>> c97398bc925cc16b8350ae8ae8768ee05d6db443
   // *****  Tabela bethadba.niveis
   declare w_i_entidades integer;
   declare w_i_niveis integer;
@@ -83,7 +107,7 @@ begin
 	   	set w_dt_alteracoes_anterior = w_dt_alteracoes;
 	   	set w_valor_anterior = w_valor;
    		
-	    message 'Nivel.: '||string(w_i_clas_niveis)||' i_niveis.: '||string(w_ordem) to client;
+	   message 'Count: ' || string(w_cont) || ' Nivel.: '||string(w_i_clas_niveis) || ' ' || string(w_i_niveis) ||' Ref.: '||string(w_i_referencias) || ' Dt: ' || string(w_dt_alteracoes) to client;
 	   
 		if not exists (select 1 from bethadba.hist_niveis hn where
 			   hn.i_entidades = w_i_entidades and
@@ -109,6 +133,7 @@ begin
 	        hcn.i_entidades = w_i_entidades and
 	        hcn.i_niveis = w_i_niveis and
 	        hcn.i_clas_niveis = w_i_clas_niveis and
+	        hcn.i_referencias = w_i_referencias and
 	        hcn.dt_alteracoes = w_dt_alteracoes) then
 	  
 	      insert into bethadba.hist_clas_niveis( i_entidades,i_niveis,i_clas_niveis,i_referencias,dt_alteracoes,vlr_anterior,vlr_novo,ordem,ordem_anterior) 

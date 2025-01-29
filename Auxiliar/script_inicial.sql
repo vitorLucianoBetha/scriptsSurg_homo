@@ -27,10 +27,14 @@ begin
 		antes_2 integer null,
 		antes_3 integer null,
 		antes_4 date null,
+		antes_5 varchar(255) null,
+		antes_6 varchar(255) null,
 		depois_1 integer null,
 		depois_2 integer null,
 		depois_3 integer null,
 		depois_4 date null,
+		depois_5 varchar(255) null,
+		depois_6 varchar(255) null,
 		sistema char(25) null);
 	
 	// ***** Cria a tabela evento_aux                                               
