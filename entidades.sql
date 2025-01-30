@@ -9,6 +9,7 @@ begin
 	declare w_cnpj char(14);
 		
 	ooLoop: for oo as cnv_entidades dynamic scroll cursor for
+	-- BTHSC-142318 Bug em Entidade | Classificação, Contato, Ente Federativo, Natureza Juridica, Tipo de Administração, Entidade RPPS
 		select 1 as w_i_entidades,
 			Filial.CdLogradouro as w_CdLogradouro,
 			trim(EnderecoFilial.DsEndereco) as w_nome_rua,
@@ -17,7 +18,7 @@ begin
 			Empresa.CdNaturezaJuridica as w_i_naturezas,
 			trim(RolEmpresas.NaEmpresa) as w_apelido,
 			EnderecoFilial.CdCep as w_cep,
-			Filial.NrEndereco as w_numero,
+			cast(cast(Filial.NrEndereco as int) as varchar(8)) as w_numero,
 			Filial.DsComplemento as w_complemento,
 			substr(NrFone,1,2) as w_ddd,
 			substr(NrFone,3,8) as w_telefone,
@@ -110,10 +111,10 @@ begin
 		
 			insert into bethadba.entidades(i_entidades,i_ruas,i_bairros,i_cidades,i_entidades_princ,apelido,cep,numero,complemento,codigo_tce,ddd,telefone,fax,email,cnpj,
 										   i_tipos_adm) 
-			values (w_i_entidades,w_i_ruas,w_i_bairros,w_i_cidades,1,w_apelido,w_cep,w_numero,w_complemento,w_i_entidades,w_ddd,w_telefone,w_fax,null,w_cnpj,8); 
+			values (w_i_entidades,w_i_ruas,w_i_bairros,w_i_cidades,1,w_apelido,w_cep,w_numero,w_complemento,w_i_entidades,w_ddd,w_telefone,w_fax,w_email,w_cnpj,8); 
 
 			insert into bethadba.hist_entidades(i_entidades,i_competencias, i_ruas,i_bairros,i_cidades,cep,numero,complemento,ddd,telefone,fax,email,cnpj, i_tipos_adm) 
-			values (w_i_entidades,'2024-01-01', w_i_ruas,w_i_bairros,w_i_cidades,w_cep,w_numero,w_complemento,w_ddd,w_telefone,w_fax,null,w_cnpj, 8); 
+			values (w_i_entidades,'2024-01-01', w_i_ruas,w_i_bairros,w_i_cidades,w_cep,w_numero,w_complemento,w_ddd,w_telefone,w_fax,w_email,w_cnpj, 8); 
 		
 			 		-- BUG BTHSC-8213
 		--BUG BTHSC-8194 CNAE incorreto
@@ -167,8 +168,7 @@ begin
 			where i_entidades = w_i_entidades
 		end if;
 	end for;
-end
-;  
+end;  
 
 
 
@@ -184,7 +184,7 @@ update bethadba.hist_entidades set i_cnae_preponderante = '8411600'
 	
 -- Ajustes
 
-/*
+
 update bethadba.hist_entidades_compl 
 set reg_eletronico_empregados = 0,
 situacao_entidade = 0,
@@ -201,9 +201,29 @@ INSERT INTO Folharh.bethadba.hist_parametros_previd
 (i_entidades, i_competencias, cod_terceiros, perc_terceiros, perc_inss, perc_acid_trab, cod_rat, processo_rat, tipo_processo_rat, cod_fpas, cod_previdencia, cod_gps, perc_isencao, cod_gps_cat15, cod_gps_obra, cod_rat_obra, perc_acid_trab_obra, fap, processo_fap, tipo_processo_fap, qualificacao_isencao, numero_certificado, dt_emissao, dt_vencto, numero_renovacao, dt_protocolo_renovacao, dt_publicacao_dou, numero_pagina_dou, classificacao_tributaria, codigo_suspensao_rat, codigo_suspensao_fap, desoneracao_folha, perc_inss_aut)
 VALUES(1, '1990-01-01', '0000', 0.00, 0.00, 1.00, '1    ', '1', 1, '639', '1', '2305', 1.00, '2402', '2402', '1    ', 1.00, 1.0000, '1', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 80, 1, 1, '0', 0);
 
+-- BTHSC-142318 Bug em Entidade | Classificação, Contato, Ente Federativo, Natureza Juridica, Tipo de Administração, Entidade RPPS
+update bethadba.hist_parametros_previd set classificacao_tributaria = (
+select B.CD_CLASSIFICACAO 
+from tecbth_delivery.gp001_Empresa A
+join tecbth_delivery.gp001_eSocial_CLASSIFICACAO_TRIBUTARIA B 
+on A.cdClassificacaoTributaria = B.PKID) where i_entidades = 1
 
+-- BTHSC-142318 Bug em Entidade | Classificação, Contato, Ente Federativo, Natureza Juridica, Tipo de Administração, Entidade RPPS
+update bethadba.hist_entidades_compl set tipo_entidade = (
+select if A.CNPJ_EFR is null or A.CNPJ_EFR = '' then 1 else 2 endif 
+from tecbth_delivery.gp001_Empresa A) where i_entidades = 1 
+
+-- BTHSC-142318 Bug em Entidade | Classificação, Contato, Ente Federativo, Natureza Juridica, Tipo de Administração, Entidade RPPS
+update bethadba.tipos_adm set i_naturezas = (
+select A.CdNaturezaJuridica 
+from tecbth_delivery.gp001_Empresa A) where i_tipos_adm = (select first i_tipos_adm from bethadba.entidades)
+
+-- BTHSC-142318 Bug em Entidade | Classificação, Contato, Ente Federativo, Natureza Juridica, Tipo de Administração, Entidade RPPS
+update bethadba.tipos_adm set tipo_orgao = 206 where i_tipos_adm = (select first i_tipos_adm from bethadba.entidades)
+
+-- BTHSC-142318 Bug em Entidade | Classificação, Contato, Ente Federativo, Natureza Juridica, Tipo de Administração, Entidade RPPS
+update bethadba.hist_entidades_compl set entidade_gestora_rpps = 'S' where i_entidades = 1
  
-
  INSERT INTO Folharh.tecbth_delivery.gp001_RolEmpresas
 (CdEmpresa, NaEmpresa, NmEmpresa, nmFisicoDB)
 VALUES(1, N'Instituto de Previdência Municipal Ilhota', N'Instituto de Previdencia ilhota', NULL);
