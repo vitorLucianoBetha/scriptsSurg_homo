@@ -179,7 +179,9 @@ end;
 
 
 -- BTHSC-132832
-update bethadba.hist_entidades set i_cnae_preponderante = '8411600'
+
+update bethadba.hist_parametros_previd set cod_fpas = 582, cod_gps = 2402, perc_inss = 20;
+update bethadba.hist_entidades set i_cnae_preponderante = '8430200';
 
 	
 -- Ajustes
