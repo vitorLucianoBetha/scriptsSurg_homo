@@ -540,8 +540,14 @@ commit;
 
  
 
- -- Jornada de Trabalho
+ -- BTHSC-146461
 update bethadba.hist_funcionarios f
 left join tecbth_delivery.gp001_FUNCIONARIO f2
 on f.i_funcionarios = f2.cdMatricula 
 set i_turmas = f2.CdEscalaTrabalho;
+
+update bethadba.funcionarios f 
+set tipo_provimento = 99;
+
+update bethadba.hist_funcionarios
+set multiplic = 1.17;
