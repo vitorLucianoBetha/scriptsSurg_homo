@@ -84,59 +84,83 @@ begin
 end
 ;
 
-/*
-INSERT INTO Folharh.bethadba.horarios_ponto
-(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial)
-VALUES(1, 1, 'Horário 001                                       ', NULL, '', 'L', '00:10:00.000', NULL, NULL, 10, NULL, 1, 'S');
-INSERT INTO Folharh.bethadba.horarios_ponto
-(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial)
-VALUES(1, 2, '3,3334                                                                                              ', NULL, '', 'L', '00:10:00.000', NULL, NULL, 10, NULL, 1, 'S');
-INSERT INTO Folharh.bethadba.horarios_ponto
-(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial)
-VALUES(1, 3, 'Escala 20 Semanal                                                                                   ', NULL, '', 'L', '00:10:00.000', NULL, NULL, 10, NULL, 1, 'S');
-INSERT INTO Folharh.bethadba.horarios_ponto
-(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial)
-VALUES(1, 4, 'Coleta de Lixo                                                                                      ', NULL, '', 'L', '00:10:00.000', NULL, NULL, 10, NULL, 1, 'S');
-INSERT INTO Folharh.bethadba.horarios_ponto
-(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial)
-VALUES(1, 5, 'Vigia Noturno 12/36                                                                                 ', NULL, '', 'L', '00:10:00.000', NULL, NULL, 10, NULL, 1, 'S');
-
-INSERT INTO Folharh.bethadba.horarios_ponto
-(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial)
-VALUES(1, 6, 'Coleta de Lixo - Noturno                                                                            ', NULL, '', 'L', '00:10:00.000', NULL, NULL, 10, NULL, 1, 'S');
-
-INSERT INTO Folharh.bethadba.horarios_ponto
-(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial)
-VALUES(1, 7, 'Normal                                                                                              ', NULL, '', 'L', '00:10:00.000', NULL, NULL, 10, NULL, 1, 'S');
-
-INSERT INTO Folharh.bethadba.horarios_ponto
-(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial)
-VALUES(1, 8, 'SETRAN                                                                                              ', NULL, '', 'L', '00:10:00.000', NULL, NULL, 10, NULL, 1, 'S');
-
-INSERT INTO Folharh.bethadba.horarios_ponto
-(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial)
-VALUES(1, 9, 'Vigia Diurno 12/36                                                                                  ', NULL, '', 'L', '00:10:00.000', NULL, NULL, 10, NULL, 1, 'S');
-
-
-
-
-
-
 /-- ILHOTA PREV ---/
 
-
 INSERT INTO Folharh.bethadba.horarios_ponto
-(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial)
+(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial);
 VALUES(1, 1, 'Horario Normal', NULL, 'N', 'L', '00:10:00.000', NULL, NULL, 10, NULL, 1, 'S');
 INSERT INTO Folharh.bethadba.horarios_ponto
-(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial)
+(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial);
 VALUES(1, 2, 'Horário 100', NULL, 'N', 'L', '00:10:00.000', NULL, NULL, 10, NULL, 1, 'S');
 INSERT INTO Folharh.bethadba.horarios_ponto
-(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial)
+(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial);
 VALUES(1, 3, 'Horario 6 horas', NULL, 'N', 'L', '00:10:00.000', NULL, NULL, 10, NULL, 1, 'S');
 INSERT INTO Folharh.bethadba.horarios_ponto
-(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial)
+(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial);
 VALUES(1, 4, 'Horário 220', NULL, 'N', 'L', '00:10:00.000', NULL, NULL, 10, NULL, 1, 'S');
 INSERT INTO Folharh.bethadba.horarios_ponto
-(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial)
+(i_entidades, i_horarios_ponto, descricao, msg_relogio, classificacao, tipo, minima_hora, tolerancia_falta, tolerancia_extra, jornada_diaria, meia_jornada, tolerancia_alocacao, enviar_esocial);
 VALUES(1, 5, 'Sem Horário', NULL, 'N', 'L', '00:10:00.000', NULL, NULL, 10, NULL, 1, 'S');
+
+
+
+
+
+-- Horário Normal
+INSERT INTO Folharh.bethadba.marcacoes_horarios
+(i_entidades, i_horarios_ponto, hora_marcacao, i_sequencial, tolerancia_minima, tolerancia_maxima, gerar_marc)
+VALUES(1, 1, '08:00:00.000', 1, NULL, NULL, 'N');
+
+INSERT INTO Folharh.bethadba.marcacoes_horarios
+(i_entidades, i_horarios_ponto, hora_marcacao, i_sequencial, tolerancia_minima, tolerancia_maxima, gerar_marc)
+VALUES(1, 1, '12:00:00.000', 2, NULL, NULL, 'N');
+
+INSERT INTO Folharh.bethadba.marcacoes_horarios
+(i_entidades, i_horarios_ponto, hora_marcacao, i_sequencial, tolerancia_minima, tolerancia_maxima, gerar_marc)
+VALUES(1, 1, '13:30:00.000', 3, NULL, NULL, 'N');
+
+INSERT INTO Folharh.bethadba.marcacoes_horarios
+(i_entidades, i_horarios_ponto, hora_marcacao, i_sequencial, tolerancia_minima, tolerancia_maxima, gerar_marc)
+VALUES(1, 1, '17:30:00.000', 4, NULL, NULL, 'N');
+
+
+
+-- Horário 100
+
+INSERT INTO Folharh.bethadba.marcacoes_horarios
+(i_entidades, i_horarios_ponto, hora_marcacao, i_sequencial, tolerancia_minima, tolerancia_maxima, gerar_marc)
+VALUES(1, 2, '08:00:00.000', 1, NULL, NULL, 'N');
+
+INSERT INTO Folharh.bethadba.marcacoes_horarios
+(i_entidades, i_horarios_ponto, hora_marcacao, i_sequencial, tolerancia_minima, tolerancia_maxima, gerar_marc)
+VALUES(1, 2, '12:00:00.000', 2, NULL, NULL, 'N');
+
+-- Horário 6 Horas
+
+INSERT INTO Folharh.bethadba.marcacoes_horarios
+(i_entidades, i_horarios_ponto, hora_marcacao, i_sequencial, tolerancia_minima, tolerancia_maxima, gerar_marc)
+VALUES(1, 3, '08:00:00.000', 1, NULL, NULL, 'N');
+
+INSERT INTO Folharh.bethadba.marcacoes_horarios
+(i_entidades, i_horarios_ponto, hora_marcacao, i_sequencial, tolerancia_minima, tolerancia_maxima, gerar_marc)
+VALUES(1, 3, '13:00:00.000', 2, NULL, NULL, 'N');
+
+-- Horário 220
+
+
+
+INSERT INTO Folharh.bethadba.marcacoes_horarios
+(i_entidades, i_horarios_ponto, hora_marcacao, i_sequencial, tolerancia_minima, tolerancia_maxima, gerar_marc)
+VALUES(1, 4, '08:00:00.000', 1, NULL, NULL, 'N');
+
+INSERT INTO Folharh.bethadba.marcacoes_horarios
+(i_entidades, i_horarios_ponto, hora_marcacao, i_sequencial, tolerancia_minima, tolerancia_maxima, gerar_marc)
+VALUES(1, 4, '12:00:00.000', 2, NULL, NULL, 'N');
+
+INSERT INTO Folharh.bethadba.marcacoes_horarios
+(i_entidades, i_horarios_ponto, hora_marcacao, i_sequencial, tolerancia_minima, tolerancia_maxima, gerar_marc)
+VALUES(1, 4, '13:18:00.000', 3, NULL, NULL, 'N');
+
+INSERT INTO Folharh.bethadba.marcacoes_horarios
+(i_entidades, i_horarios_ponto, hora_marcacao, i_sequencial, tolerancia_minima, tolerancia_maxima, gerar_marc)
+VALUES(1, 4, '18:00:00.000', 4, NULL, NULL, 'N');
