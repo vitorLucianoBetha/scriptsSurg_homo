@@ -86,7 +86,7 @@ begin
 	cdEscala as w_i_turmas,
 	1 as w_i_sequencial,
 	cdEscala as w_i_periodos_trab,
-	'N' as w_principal
+	'S' as w_principal
 	from tecbth_delivery.gp001_ESCALA
 	
 	do
