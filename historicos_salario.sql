@@ -128,7 +128,7 @@ end if;
     if w_i_motivos_altsal = 0 then
       set w_i_motivos_altsal=1
     end if;
-    set w_horas_mes="truncate"(cast((w_nrdias-1)*w_NrHorasDia*5 as decimal(5,2)),2);
+    set w_horas_mes="truncate"(cast((w_nrdias)*w_NrHorasDia*5 as decimal(5,2)),2);
     if w_horas_mes = 200.10 then
 		set w_horas_mes = 200.00
 	elseif w_horas_mes = 219.90 then

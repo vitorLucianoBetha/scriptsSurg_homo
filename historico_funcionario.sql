@@ -539,3 +539,9 @@ end;
 commit;
 
  
+
+ -- Jornada de Trabalho
+update bethadba.hist_funcionarios f
+left join tecbth_delivery.gp001_FUNCIONARIO f2
+on f.i_funcionarios = f2.cdMatricula 
+set i_turmas = f2.CdEscalaTrabalho;
