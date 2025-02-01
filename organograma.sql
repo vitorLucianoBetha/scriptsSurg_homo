@@ -33,11 +33,17 @@ set nivel1 = substr(cdlotacao,1,1),
 commit
 ;	
 
+-- ajustar o campo da marcara dos organogramas BTHSC-142579
+update  tecbth_delivery.gp001_LOTACAO
+		set cdlotacao = (case 
+        	when length(cdlotacao) < 6 then cdlotacao + replicate('0', 6 - length(cdlotacao))
+	        else cdlotacao
+	    end)
+
 
 if  exists (select 1 from sys.sysprocedure where creator = (select user_id from sys.sysuserperms where user_name = current user) and proc_name = 'cnv_organogramas') then
 	drop procedure cnv_organogramas;
-end if
-;
+end if;
 
 
 begin

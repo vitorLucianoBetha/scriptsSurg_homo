@@ -3,6 +3,68 @@ if  exists (select 1 from sys.sysprocedure where creator = (select user_id from 
 end if
 ;
 
+-- BTHSC-142579 - ajuste de niveis - wesllen
+
+insert into bethadba.niveis_organ(i_config_organ,i_niveis_organ,descricao,num_digitos,separador_nivel,tot_digitos)on existing skip 
+values(1,2,'DEPTO',1,'.',2)
+;
+
+insert into bethadba.niveis_organ(i_config_organ,i_niveis_organ,descricao,num_digitos,separador_nivel,tot_digitos)on existing skip 
+values(1,3,'SETOR',1,'.',3)
+;
+
+insert into bethadba.niveis_organ(i_config_organ,i_niveis_organ,descricao,num_digitos,separador_nivel,tot_digitos)on existing skip 
+values(1,4,'SECAO',2,'.',5)
+;
+
+
+insert into bethadba.niveis_organ(i_config_organ,i_niveis_organ,descricao,num_digitos,separador_nivel,tot_digitos)on existing skip 
+values(99,2,'DEPTO',1,'.',2)
+;
+
+insert into bethadba.niveis_organ(i_config_organ,i_niveis_organ,descricao,num_digitos,separador_nivel,tot_digitos)on existing skip 
+values(99,3,'SETOR',1,'.',3)
+;
+
+insert into bethadba.niveis_organ(i_config_organ,i_niveis_organ,descricao,num_digitos,separador_nivel,tot_digitos)on existing skip 
+values(99,4,'SECAO',2,'.',5)
+;
+
+
+begin
+	// *****  Tabela bethadba.config_organ
+	declare w_i_config_organ smallint;
+	
+	ooLoop: for oo as cnv_config_organ dynamic scroll cursor for
+		select 1 as w_i_entidades,cdOrganograma as w_cdOrganograma,dsOrganograma as w_descricao
+		from tecbth_delivery.GP001_organograma  
+		order by 1,2 asc	
+	do
+		// *****  Inicializa Variaveis
+		set w_i_config_organ=null;
+		
+		// *****  Converte tabela bethadba.config_organ
+		if w_cdOrganograma = 99 then
+			set w_i_config_organ=99
+		elseif w_cdOrganograma = 1 then
+			set w_i_config_organ=1
+		else
+			set w_i_config_organ=w_cdOrganograma
+		end if;
+		
+		message 'Con. Org.: '||w_i_config_organ||' Des.: '||w_descricao to client;
+		insert into bethadba.config_organ(i_config_organ,i_atos,descricao) on existing skip
+		values (w_i_config_organ,null,w_descricao);		
+		
+		insert into tecbth_delivery.antes_depois 
+		values('O',w_i_entidades,w_cdOrganograma,null,null,w_i_config_organ,null,null,null,null);
+		
+	end for;
+end
+;
+
+--------------------------------------------------------------------------------------------
+
 
 begin
 	// *****  Tabela bethadba.config_organ
