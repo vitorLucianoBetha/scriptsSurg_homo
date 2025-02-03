@@ -11,6 +11,7 @@ select cdDesligamento,null,DsDesligamento,5,'N',CdCaged,CdRais,null,null,7,null 
 
 ;
 
+--BTHSC-145660  inserido item 15
 update gp001_tipodesligamento 
 set i_motivos_resc = if CdDesligamento = 1 then 2 else
                       if CdDesligamento = 2 then 1 else  
