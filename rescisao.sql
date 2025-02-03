@@ -7,9 +7,14 @@ begin
 	declare w_dt_aviso date; 
 
 	ooLoop: for oo as cnv_rescisoes dynamic scroll cursor for
-		select 1 as w_i_entidades,CdMatricula as w_cdMatricula,SqContrato as w_SqContrato,CdDesligamento as w_CdDesligamento,date(dtAposentadoria) as w_dt_rescisao,DtAvisoPrevio as w_DtAvisoPrevio
+		select 1 as w_i_entidades,
+			CdMatricula as w_cdMatricula,
+			SqContrato as w_SqContrato,
+			CdDesligamento as w_CdDesligamento,
+			isnull(date(dtAposentadoria),date(dtRescisao)) as w_dt_rescisao,
+			isnull(DtAvisoPrevio,date(dtRescisao)) as w_DtAvisoPrevio
 		from tecbth_delivery.gp001_funcionario 
-		where dtRescisao is not null  
+		where dtRescisao is not null 
 		order by 1,2,3 asc	
 	do
 		
@@ -23,7 +28,7 @@ begin
 		set w_i_funcionarios=cast(w_cdMatricula as integer);
 		
 		if exists (select 1 from bethadba.funcionarios where i_entidades = w_i_entidades and i_funcionarios = w_i_funcionarios) then	
-           select DISTINCT i_motivos_resc,i_motivos_apos into w_i_motivos_resc,w_i_motivos_apos  from  tecbth_delivery.gp001_tipodesligamento where cddesligamento = w_CdDesligamento;
+           select DISTINCT i_motivos_resc,i_motivos_apos into w_i_motivos_resc,w_i_motivos_apos from  tecbth_delivery.gp001_tipodesligamento where cddesligamento = w_CdDesligamento;
            if w_DtAvisoPrevio is null then
 				set w_dt_aviso=w_dt_rescisao
 			else
