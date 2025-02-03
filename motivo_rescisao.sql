@@ -25,7 +25,8 @@ set i_motivos_resc = if CdDesligamento = 1 then 2 else
                       if CdDesligamento = 11 then 20 else 
                       if CdDesligamento = 12 then 21 else 
                       if CdDesligamento = 13 then 22 else 
-                      if CdDesligamento = 14 then 23 endif endif endif endif endif endif endif endif endif endif endif endif endif endif
+                      if CdDesligamento = 14 then 23 else 
+                      if CdDesligamento = 15 then 15 endif endif endif endif endif endif endif endif endif endif endif endif endif endif endif
 where i_motivos_resc is null;
 commit
 ;
