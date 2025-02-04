@@ -15,14 +15,26 @@ begin
 	declare w_vlbasecalculo numeric(12,2);
 	
 	ooLoop: for oo as cnv_bases_calc dynamic scroll cursor for
-		select 1 as w_i_entidades,cdMatricula as w_cdMatricula,sqContrato as w_sqContrato,dtCompetencia as w_dtCompetencia,tpcalculo as w_tpcalculo,
-			cdVerba as w_cdVerba,inRetificacao as w_inRetificacao,dtPagamento as w_dtPagamento,if cast(vlBaseCalculo as decimal(12,2)) = 0 then 
-                                                                                                  cast(vlMensal as decimal(12,2))
-                                                                                               else
-                                                                                                  cast(vlBaseCalculo as decimal(12,2))  
-                                                                                               endif as w_vlr_base, vlMensal as w_vlMensal, fu_convdecimal(tira_caracter_1(vlComplemento),0) as w_vlcomplemento
-		from tecbth_delivery.gp001_fichafinanceira 
-		where  w_vlr_base > 1
+		select 1 as w_i_entidades,
+			cdMatricula as w_cdMatricula,
+			sqContrato as w_sqContrato,
+			dtCompetencia as w_dtCompetencia,
+			tpcalculo as w_tpcalculo,
+			f.cdVerba as w_cdVerba,
+			inRetificacao as w_inRetificacao,
+			dtPagamento as w_dtPagamento,
+			if cast(replace(vlBaseCalculo,',','.') as decimal(12,2)) = 0 then 				
+            	cast(replace(vlMensal,',','.') as decimal(12,2))
+            else            	
+            	cast(replace(vlBaseCalculo,',','.') as decimal(12,2))  
+            endif as w_vlr_base,
+            vlMensal as w_vlMensal,
+            tecbth_delivery.fu_convdecimal(tecbth_delivery.tira_caracter_1(vlComplemento),0) as w_vlcomplemento,
+            if v.TpCategoria in ('D','P') then 'S' else 'N' endif as w_compoe_liq
+		from tecbth_delivery.gp001_fichafinanceira f
+		join tecbth_delivery.gp001_VERBA v on f.cdVerba = v.CdVerba 
+		where w_vlr_base > 1
+		and f.sqHabilitacao = 1
 		order by 1,4,2,3,5 asc
 	do
 		
@@ -82,7 +94,7 @@ begin
                  print 'cdMatricula: '+string(w_cdMatricula); 
                    insert into bethadba.movimentos( i_entidades,i_tipos_proc,i_competencias,i_processamentos,i_funcionarios,i_eventos,
                     vlr_inf,vlr_calc,tipo_pd,compoe_liq,classif_evento,mov_resc) on existing skip values( w_i_entidades,w_i_tipos_proc,w_i_competencias,
-                    1,w_i_funcionarios,138,w_vlcomplemento,w_vlr_base,'D','N',31,'N') 
+                    1,w_i_funcionarios,138,w_vlcomplemento,w_vlr_base,'D',w_compoe_liq,31,'N') 
             end if
           end if;	 
            print '3';
