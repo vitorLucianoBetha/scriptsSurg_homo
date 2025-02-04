@@ -38,11 +38,24 @@ begin
 	declare w_digitou_form_aux char(1);
 	declare w_classif_evento_aux tinyint;
 	ooLoop: for oo as cnv_movimentos dynamic scroll cursor for
-		select   1 as w_i_entidades,cdMatricula as w_cdMatricula,sqContrato as w_sqContrato,dtCompetencia as w_dtCompetencia,tpcalculo as w_tpcalculo,sqHabilitacao as w_sqHabilitacao,
-			cdVerba as w_cdVerba,inRetificacao as w_inRetificacao,dtPagamento as w_dtPagamento,fu_convdecimal(tira_caracter_1(vlComplemento),0) as w_vlr_inf,
-			cast(vlMensal as decimal(12,2)) as w_vlr_calc,cast(vlAuxiliar as decimal(12,2)) as w_vlAuxiliar,
-			cast(vlIntegral as decimal(12,2)) as w_vlIntegral 
-		from tecbth_delivery.gp001_fichafinanceira 
+		select 1 as w_i_entidades,
+			cdMatricula as w_cdMatricula,
+			sqContrato as w_sqContrato,
+			dtCompetencia as w_dtCompetencia,
+			tpcalculo as w_tpcalculo,
+			sqHabilitacao as w_sqHabilitacao,
+			f.cdVerba as w_cdVerba,
+			inRetificacao as w_inRetificacao,
+			dtPagamento as w_dtPagamento,
+			tecbth_delivery.fu_convdecimal(tecbth_delivery.tira_caracter_1(vlComplemento),0) as w_vlr_inf,
+			cast(vlMensal as decimal(12,2)) as w_vlr_calc,
+			cast(vlAuxiliar as decimal(12,2)) as w_vlAuxiliar,
+			cast(vlIntegral as decimal(12,2)) as w_vlIntegral,
+			if v.TpCategoria in ('D','P') then 'S' else 'N' endif as w_compoe_liq
+		from tecbth_delivery.gp001_fichafinanceira f
+		join tecbth_delivery.gp001_VERBA v on f.cdVerba = v.CdVerba
+		where f.sqHabilitacao = 1
+		order by 1, 2, 4, 9 asc
 	do
 		
 		// *****  Tabela bethadba.movimentos
@@ -52,7 +65,6 @@ begin
 		set w_i_funcionarios = null;
 		set w_i_eventos = null;
 		set w_tipo_pd = null;
-		set w_compoe_liq = null;
 		set w_classif_evento = null;
 		set w_mov_resc = null;
 		
@@ -165,8 +177,8 @@ begin
 			and	i_entidades = w_i_entidades;
 
 
-select first tipo_pd,compoe_liq,classif_evento 
-			into w_tipo_pd,w_compoe_liq,w_classif_evento 
+select first tipo_pd,classif_evento 
+			into w_tipo_pd,w_classif_evento 
 		   from bethadba.eventos  
 			where i_eventos = w_i_eventos;
 	
@@ -214,8 +226,7 @@ select first tipo_pd,compoe_liq,classif_evento
 				
 				message 'Ent.: '||w_i_entidades||' Tip.: '||w_i_tipos_proc||' Com.: '||w_i_competencias||' Pro.: '||w_i_processamentos||' Fun.: '||w_i_funcionarios to client;
 					
-				insert into  bethadba.dados_calc(i_entidades,i_tipos_proc,i_competencias,i_processamentos,i_funcionarios,vlr_proventos,vlr_descontos,gerado_emp,movto_anterior,dt_pagto,
-												i_processamentos_lotes)on existing skip
+				insert into  bethadba.dados_calc(i_entidades,i_tipos_proc,i_competencias,i_processamentos,i_funcionarios,vlr_proventos,vlr_descontos,gerado_emp,movto_anterior,dt_pagto,i_processamentos_lotes)on existing skip
 				values (w_i_entidades,w_i_tipos_proc,w_i_competencias,w_i_processamentos,w_i_funcionarios,0.0,0.0,'N','N',w_dt_pagto,w_i_processamentos_lotes);
 				
 				// **** Movimentos
@@ -233,7 +244,7 @@ end;
 --update bethadba.movimentos set compoe_liq = 'N' WHERE i_eventos in (441,4) and i_tipos_proc in (51,52) and i_funcionarios in (192864)
 --update bethadba.dados_calc set dt_fechamento = dt_pagto, recibo_esocial = cast(i_funcionarios as varchar(15)) + '/' + cast(i_competencias  as varchar(20))
 
-
+/*
 update bethadba.dados_calc as t1 
 set vlr_proventos = (select coalesce(sum(vlr_calc),0) 
 				     from bethadba.movimentos as t2 
@@ -254,4 +265,4 @@ set vlr_proventos = (select coalesce(sum(vlr_calc),0)
 					 and t2.tipo_pd = 'D' 
 					 and t2.compoe_liq = 'S');
 
-commit;
+commit;*/
