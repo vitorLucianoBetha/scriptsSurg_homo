@@ -30,7 +30,8 @@ begin
             endif as w_vlr_base,
             vlMensal as w_vlMensal,
             tecbth_delivery.fu_convdecimal(tecbth_delivery.tira_caracter_1(vlComplemento),0) as w_vlcomplemento,
-            if v.TpCategoria in ('D','P') then 'S' else 'N' endif as w_compoe_liq
+            if v.TpCategoria in ('D','P') then 'S' else 'N' endif as w_compoe_liq,
+			v.TpCategoria as w_tipo_pd
 		from tecbth_delivery.gp001_fichafinanceira f
 		join tecbth_delivery.gp001_VERBA v on f.cdVerba = v.CdVerba 
 		where w_vlr_base > 1
@@ -92,9 +93,8 @@ begin
                  print 'i_competencias: '+string(w_i_competencias);
                  print 'i_funcionarios: '+string(w_i_funcionarios); 
                  print 'cdMatricula: '+string(w_cdMatricula); 
-                   insert into bethadba.movimentos( i_entidades,i_tipos_proc,i_competencias,i_processamentos,i_funcionarios,i_eventos,
-                    vlr_inf,vlr_calc,tipo_pd,compoe_liq,classif_evento,mov_resc) on existing skip values( w_i_entidades,w_i_tipos_proc,w_i_competencias,
-                    1,w_i_funcionarios,138,w_vlcomplemento,w_vlr_base,'D',w_compoe_liq,31,'N') 
+                   insert into bethadba.movimentos( i_entidades,i_tipos_proc,i_competencias,i_processamentos,i_funcionarios,i_eventos,vlr_inf,vlr_calc,tipo_pd,compoe_liq,classif_evento,mov_resc) on existing skip 
+				   values( w_i_entidades,w_i_tipos_proc,w_i_competencias,1,w_i_funcionarios,138,w_vlcomplemento,w_vlr_base,'D',w_compoe_liq,31,'N') 
             end if
           end if;	 
            print '3';
@@ -133,8 +133,7 @@ begin
 							
 								insert into bethadba.bases_calc(i_entidades,i_tipos_proc,i_competencias,i_processamentos,i_funcionarios,i_tipos_bases,i_sequenciais,i_eventos,
 																vlr_base) on existing skip
-								values (w_i_entidades,w_i_tipos_proc,w_i_competencias,1,w_i_funcionarios,w_i_tipos_bases,w_i_sequenciais,null,
-										/*w_vlbasecalculo*/w_vlr_base);
+								values (w_i_entidades,w_i_tipos_proc,w_i_competencias,1,w_i_funcionarios,w_i_tipos_bases,w_i_sequenciais,null,/*w_vlbasecalculo*/w_vlr_base);
 							end if;
 							
 							if (w_i_tipos_proc in(11,41,42,51,52,80)) and (w_cdVerba in (529)) then
@@ -163,8 +162,7 @@ begin
 							
 								insert into bethadba.bases_calc(i_entidades,i_tipos_proc,i_competencias,i_processamentos,i_funcionarios,i_tipos_bases,i_sequenciais,i_eventos,
 																vlr_base) on existing skip
-								values (w_i_entidades,w_i_tipos_proc,w_i_competencias,1,w_i_funcionarios,w_i_tipos_bases,w_i_sequenciais,null,
-										/*w_vlbasecalculo*/w_vlr_base);
+								values (w_i_entidades,w_i_tipos_proc,w_i_competencias,1,w_i_funcionarios,w_i_tipos_bases,w_i_sequenciais,null,/*w_vlbasecalculo*/w_vlr_base);
 							end if;
 							
 							if (w_i_tipos_proc in(11,41,42,51,52,80)) and (w_cdVerba in (527,528)) then
@@ -223,8 +221,7 @@ begin
 							
 								insert into bethadba.bases_calc(i_entidades,i_tipos_proc,i_competencias,i_processamentos,i_funcionarios,i_tipos_bases,i_sequenciais,i_eventos,
 																vlr_base)on existing skip
-								values (w_i_entidades,w_i_tipos_proc,w_i_competencias,1,w_i_funcionarios,w_i_tipos_bases,w_i_sequenciais,null,
-										/*w_vlbasecalculo*/w_vlr_base);
+								values (w_i_entidades,w_i_tipos_proc,w_i_competencias,1,w_i_funcionarios,w_i_tipos_bases,w_i_sequenciais,null,/*w_vlbasecalculo*/w_vlr_base);
 							end if;
 						end if;
 					end if;

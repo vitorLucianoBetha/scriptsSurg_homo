@@ -51,7 +51,8 @@ begin
 			cast(vlMensal as decimal(12,2)) as w_vlr_calc,
 			cast(vlAuxiliar as decimal(12,2)) as w_vlAuxiliar,
 			cast(vlIntegral as decimal(12,2)) as w_vlIntegral,
-			if v.TpCategoria in ('D','P') then 'S' else 'N' endif as w_compoe_liq
+			if v.TpCategoria in ('D','P') then 'S' else 'N' endif as w_compoe_liq,
+			v.TpCategoria as w_tipo_pd
 		from tecbth_delivery.gp001_fichafinanceira f
 		join tecbth_delivery.gp001_VERBA v on f.cdVerba = v.CdVerba
 		where f.sqHabilitacao = 1
@@ -135,7 +136,7 @@ begin
 			set w_i_processamentos=1;
 
 
-	
+			
 			if not w_cdVerba = any(select   evento from tecbth_delivery.evento_aux where tipo_pd = 'F' and w_i_entidades = w_i_entidades  ) then
 				if not exists(select distinct  1 from tecbth_delivery.evento_aux where evento = w_cdVerba and retificacao = w_inRetificacao and w_i_entidades = w_i_entidades) then
 					if w_inRetificacao in('C','D') then
@@ -169,18 +170,19 @@ begin
 
 
             select distinct i_eventos
-		into w_i_eventos 
- from tecbth_delivery.evento_aux 
+			into w_i_eventos 
+ 			from tecbth_delivery.evento_aux 
 			where evento  = w_cdVerba 
 			and retificacao = w_inRetificacao 
 			and	resc_mov = 'N' 
 			and	i_entidades = w_i_entidades;
 
-
-select first tipo_pd,classif_evento 
-			into w_tipo_pd,w_classif_evento 
-		   from bethadba.eventos  
-			where i_eventos = w_i_eventos;
+			if w_tipo_pd not in ('D', 'P') then
+				select first tipo_pd,classif_evento 
+							into w_tipo_pd,w_classif_evento 
+						from bethadba.eventos  
+							where i_eventos = w_i_eventos;
+			end if;
 	
 
 
