@@ -244,7 +244,7 @@ end;
 --update bethadba.movimentos set compoe_liq = 'N' WHERE i_eventos in (441,4) and i_tipos_proc in (51,52) and i_funcionarios in (192864)
 --update bethadba.dados_calc set dt_fechamento = dt_pagto, recibo_esocial = cast(i_funcionarios as varchar(15)) + '/' + cast(i_competencias  as varchar(20))
 
-/*
+
 update bethadba.dados_calc as t1 
 set vlr_proventos = (select coalesce(sum(vlr_calc),0) 
 				     from bethadba.movimentos as t2 
@@ -265,4 +265,4 @@ set vlr_proventos = (select coalesce(sum(vlr_calc),0)
 					 and t2.tipo_pd = 'D' 
 					 and t2.compoe_liq = 'S');
 
-commit;*/
+commit;
