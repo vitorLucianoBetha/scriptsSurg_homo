@@ -13,21 +13,21 @@ end if
 ;
 
 update tecbth_delivery.gp001_LOTACAO 
-set nivel1 = substr(cdlotacao,1,1), 
-    nivel2 = if trim(substr(cdlotacao,2,1)) = '' then 
+set nivel1 = substr(cdlotacao,1,2), 
+    nivel2 = if trim(substr(cdlotacao,3,2)) = '' then 
 				'0' 
 			else 
-				substr(cdlotacao,2,1) 
+				substr(cdlotacao,3,2) 
 			endif,
-    nivel3 = if trim(substr(cdlotacao,3,1)) = '' then 
+    nivel3 = if trim(substr(cdlotacao,5,2)) = '' then 
 				'0' 
 			else 
-				substr(cdlotacao,3,1) 
+				substr(cdlotacao,5,2) 
 			endif, 
-	nivel4 = if trim(substr(cdlotacao,4,2)) = '' then 
+	nivel4 = if trim(substr(cdlotacao,7,2)) = '' then 
 				'00' 
 			else 
-				substr(cdlotacao,4,2) 
+				substr(cdlotacao,7,2) 
 			endif 		
 ;
 commit
