@@ -39,22 +39,22 @@ end;
 -- BTHSC-142579 - ajuste de niveis - wesllen
 
 insert into bethadba.niveis_organ(i_config_organ,i_niveis_organ,descricao,num_digitos,separador_nivel,tot_digitos)on existing skip 
-values(1,1,'DEPTO',1,'.',2);
+values(1,1,'DEPTO',2,'.',2);
 
 insert into bethadba.niveis_organ(i_config_organ,i_niveis_organ,descricao,num_digitos,separador_nivel,tot_digitos)on existing skip 
-values(1,2,'SETOR',1,'.',2);
+values(1,2,'SETOR',2,'.',4);
 
 insert into bethadba.niveis_organ(i_config_organ,i_niveis_organ,descricao,num_digitos,separador_nivel,tot_digitos)on existing skip 
-values(1,3,'SECAO',1,'.',3);
+values(1,3,'SECAO',2,'.',6);
 
 insert into bethadba.niveis_organ(i_config_organ,i_niveis_organ,descricao,num_digitos,separador_nivel,tot_digitos)on existing skip 
-values(99,1,'DEPTO',1,'.',2);
+values(99,1,'DEPTO',2,'.',2);
 
 insert into bethadba.niveis_organ(i_config_organ,i_niveis_organ,descricao,num_digitos,separador_nivel,tot_digitos)on existing skip 
-values(99,2,'SETOR',1,'.',2);
+values(99,2,'SETOR',2,'.',4);
 
 insert into bethadba.niveis_organ(i_config_organ,i_niveis_organ,descricao,num_digitos,separador_nivel,tot_digitos)on existing skip 
-values(99,3,'SECAO',1,'.',3);
+values(99,3,'SECAO',2,'.',6);
 
 
 --------------------------------------------------
