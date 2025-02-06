@@ -8,19 +8,19 @@ COMMIT;
 -- BTHSC-59216 - ajustes de niveis - André
 
 if not exists (select 1 from sys.syscolumns where creator = current user  and tname = 'tecbth_delivery.gp001_LOTACAO' and cname = 'i_config_organ') then 
-	alter table tecbth_delivery.gp001_LOTACAO add(i_config_organ integer null, nivel1 char(1) null, nivel2 char(2) null,nivel3 char(3) null, nivel4 char(5) null );
+	alter table tecbth_delivery.gp001_LOTACAO add(i_config_organ integer null, nivel1 char(5) null, nivel2 char(5) null,nivel3 char(5) null, nivel4 char(5) null );
 end if
 ;
 
 update tecbth_delivery.gp001_LOTACAO 
 set nivel1 = substr(cdlotacao,1,2), 
     nivel2 = if trim(substr(cdlotacao,3,2)) = '' then 
-				'0' 
+				'00' 
 			else 
 				substr(cdlotacao,3,2) 
 			endif,
     nivel3 = if trim(substr(cdlotacao,5,2)) = '' then 
-				'0' 
+				'00' 
 			else 
 				substr(cdlotacao,5,2) 
 			endif, 
@@ -36,7 +36,7 @@ commit
 -- ajustar o campo da marcara dos organogramas BTHSC-142579
 update  tecbth_delivery.gp001_LOTACAO
 		set cdlotacao = (case 
-        	when length(cdlotacao) < 6 then cdlotacao + replicate('0', 6 - length(cdlotacao))
+        	when length(cdlotacao) < 8 then cdlotacao + replicate('0', 8 - length(cdlotacao))
 	        else cdlotacao
 	    end)
 
