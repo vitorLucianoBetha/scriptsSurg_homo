@@ -269,14 +269,14 @@ begin
 			end if;
 			*/
 			if w_inContribuiFundoPrev in(-1) then
-			set w_fundo_prev='S';
-			set w_prev_federal='N';
-			SET w_i_planos_previd = 1;
+              set w_fundo_prev='S';
+              set w_prev_federal='N';
+              SET w_i_planos_previd = 1;
 			ELSE
-			set w_prev_federal='S';
-			set w_fundo_prev='N';
+              set w_prev_federal='S';
+              set w_fundo_prev='N';
             end if;
-			
+
 		set w_prev_estadual ='N';
 		set w_fundo_ass ='N';
 			set w_i_pessoas=null;
@@ -475,10 +475,10 @@ end if;
 		if w_inContribuiFundoPrev in(-1) then
 			set w_fundo_prev='S';
 			set w_prev_federal='N';
-			ELSE
+        ELSE
 			set w_prev_federal='S';
 			set w_fundo_prev='N';
-			end if;
+        end if;
 		
 		set w_prev_estadual ='N';
 		set w_fundo_ass ='N';
