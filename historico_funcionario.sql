@@ -166,6 +166,7 @@ begin
 	declare w_data datetime;
 	declare w_number integer;
 	declare w_i_funcionarios_aux integer;
+    declare w_tipo_prev_conc char(1);
 	open cur_conver with hold;
 		set w_number=0;
 		L_item: loop
@@ -202,6 +203,7 @@ begin
 			set w_num_quadro_cp=null;
 			set w_num_cp=null;
 			set w_i_planos_previd = null;
+            set w_tipo_prev_conc = null;
 			
 			// *****  Converte tabela bethadba.hist_funcionarios
 			set w_i_funcionarios=cast(w_cdMatricula as integer);
@@ -268,17 +270,54 @@ begin
 				set w_fundo_prev='N'
 			end if;
 			*/
-			if w_inContribuiFundoPrev in(-1) then
-              set w_fundo_prev='S';
-              set w_prev_federal='N';
-              SET w_i_planos_previd = 1;
-			ELSE
-              set w_prev_federal='S';
-              set w_fundo_prev='N';
+            if w_cdVinculoEmpregaticio is not null then
+              set w_tipo_prev_conc = (select trim(tpINSS) from tecbth_delivery.gp001_vinculoempregaticio
+                                      where cdvinculoempregaticio = w_cdVinculoEmpregaticio);
+              if w_tipo_prev_conc = 'C' then
+                set w_prev_federal='S';
+                set w_fundo_prev='N';
+              else
+                if w_tipo_prev_conc = 'E' then
+                  set w_prev_federal='N';
+                  set w_fundo_prev='S';
+                  set w_i_planos_previd = 1;
+                else
+                  if w_tipo_prev_conc = 'T' then
+                    set w_prev_federal='S';
+                    set w_fundo_prev='S';
+                    set w_i_planos_previd = 1;
+                  else
+                    if (w_inContribuiFundoPrev in(-1)) and (w_inContribuiINSS in(0)) then
+                      set w_fundo_prev='S';
+                      set w_prev_federal='N';
+                      set w_i_planos_previd = 1;
+                    else
+                      if (w_inContribuiFundoPrev in(0)) and (w_inContribuiINSS in(-1)) then
+                        set w_fundo_prev='N';
+                        set w_prev_federal='S';
+                      else
+                        if (w_inContribuiFundoPrev in(-1)) and (w_inContribuiINSS in(-1)) then
+                          set w_fundo_prev='S';
+                          set w_prev_federal='S';
+                        else
+                          set w_prev_federal='N';
+                          set w_fundo_prev='N';
+                        end if;
+                      end if;
+                    end if;
+                  end if;
+                end if;
+              end if;
             end if;
 
-		set w_prev_estadual ='N';
-		set w_fundo_ass ='N';
+        if (w_prev_federal = 'N') and (w_fundo_prev = 'N') then
+          set w_prev_estadual ='S';
+          set w_fundo_ass ='N';
+        else
+          set w_prev_estadual ='N';
+          set w_fundo_ass ='N';
+        end if;
+
 			set w_i_pessoas=null;
 			set w_i_pessoas_contas=null;
 				
