@@ -172,10 +172,16 @@ end;
 
 
 
- 		--BUG BTHSC-8215 /BTHSC-8209
-		--insert into bethadba.hist_entidades_compl (i_entidades,i_competencias,pagto_previdenciario,i_pessoas,cnpj_efr,i_entidades_efr,indicativo_entidade_educativa
---select top 1  1,'2023-05-01',1,(select i_pessoas from bethadba.pessoas where nome = nmresponsavel) as pessoas,(SELECT FIRST CNPJ_EFR FROM gp001_EMPRESA) cnpjef,1,'S'  from gp001_RESPONSAVEL ;
-		--BUG BTHSC-8215 /BTHSC-8209 
+INSERT INTO bethadba.hist_entidades_compl (
+    i_entidades, i_competencias, pagto_previdenciario, 
+    i_pessoas, cnpj_efr, i_entidades_efr, indicativo_entidade_educativa
+)
+SELECT TOP 1 
+    1, '2023-05-01', 1, 
+    (SELECT TOP 1 i_pessoas FROM bethadba.pessoas WHERE nome = nmresponsavel),
+    (SELECT TOP 1 CNPJ_EFR FROM gp001_EMPRESA), 
+    1, 'S'  
+FROM gp001_RESPONSAVEL;
 
 
 -- BTHSC-132832

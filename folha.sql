@@ -35,7 +35,7 @@ begin
 		from tecbth_delivery.gp001_fichafinanceira f
 		join tecbth_delivery.gp001_VERBA v on f.cdVerba = v.CdVerba 
 		where w_vlr_base > 1
-		and f.sqHabilitacao = 1
+
 		order by 1,4,2,3,5 asc
 	do
 		
