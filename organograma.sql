@@ -8,7 +8,7 @@ COMMIT;
 -- BTHSC-59216 - ajustes de niveis - André
 
 if not exists (select 1 from sys.syscolumns where creator = current user  and tname = 'tecbth_delivery.gp001_LOTACAO' and cname = 'i_config_organ') then 
-	alter table tecbth_delivery.gp001_LOTACAO add(i_config_organ integer null, nivel1 char(5) null, nivel2 char(5) null,nivel3 char(5) null, nivel4 char(5) null );
+	alter table tecbth_delivery.gp001_LOTACAO add(i_config_organ integer null, nivel1 varchar(5) null, nivel2 varchar(5) null,nivel3 varchar(5) null, nivel4 varchar(5) null );
 end if
 ;
 
@@ -23,12 +23,7 @@ set nivel1 = substr(cdlotacao,1,2),
 				'00' 
 			else 
 				substr(cdlotacao,5,2) 
-			endif, 
-	nivel4 = if trim(substr(cdlotacao,7,2)) = '' then 
-				'00' 
-			else 
-				substr(cdlotacao,7,2) 
-			endif 		
+			endif
 ;
 commit
 ;	
@@ -76,9 +71,9 @@ begin
 		where i_config_organ = w_i_config_organ;
 		
 		if length(w_CdLotacao) < w_digitos then
-			set w_i_organogramas=string(w_nivel1)+string(w_nivel2)+string(w_nivel3)+string(w_nivel4)  
+			set w_i_organogramas=string(w_nivel1)+string(w_nivel2)+string(w_nivel3)
 		else
-			set w_i_organogramas=string(w_nivel1)+string(w_nivel2)+string(w_nivel3)+string(w_nivel4)
+			set w_i_organogramas=string(w_nivel1)+string(w_nivel2)+string(w_nivel3)
 		end if;
 		
 		if w_nivel = 1 then
