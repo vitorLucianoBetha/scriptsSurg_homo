@@ -56,7 +56,16 @@ begin
 		
 	end for;
 end;
-COMMIT
+
+insert into bethadba.rescisoes_benef_rpps(i_entidades, i_funcionarios, i_rescisoes, motivo_cessacao, cnpj_sucessor, cnpj_instituidor, cnpj_ente_sucedido, inst_esocial, origem_beneficio, dt_publi_concessao, 
+                                          dt_sucessao_beneficio, beneficio_anterior, observacao, num_beneficio, i_tipos_beneficios, dt_inicio, determinacao_judicial, dt_rescisao, dt_canc_resc) on existing update
+select rescisoes.i_entidades, rescisoes.i_funcionarios, rescisoes.i_rescisoes, null, null, null, null, null, null, null, 
+       null, null, null, gp001_funcionario.nrbeneficio, if length(trim(gp001_funcionario.tpbeneficio)) = 3 then '0' || trim(gp001_funcionario.tpbeneficio) else trim(gp001_funcionario.tpbeneficio) endif, null, null, rescisoes.dt_rescisao, null
+from bethadba.rescisoes, tecbth_delivery.gp001_funcionario
+where rescisoes.i_funcionarios = gp001_funcionario.cdmatricula;
+
+commit;
+
 
 
 /* 
