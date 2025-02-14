@@ -12,22 +12,26 @@ select cdDesligamento,null,DsDesligamento,5,'N',CdCaged,CdRais,null,null,7,null 
 ;
 
 --BTHSC-145660  inserido item 15
+
 update gp001_tipodesligamento 
-set i_motivos_resc = if CdDesligamento = 1 then 2 else
-                      if CdDesligamento = 2 then 1 else  
-                      if CdDesligamento = 3 then 16 else
-                      if CdDesligamento =  4 then 7 else  
-                      if CdDesligamento = 5 then 4 else  
-                      if CdDesligamento = 6 then 17 else 
-                      if CdDesligamento = 7 then 12 else 
-                      if CdDesligamento = 8 then 18 else 
-                      if CdDesligamento = 9 then 19 else 
-                      if CdDesligamento = 10 then 8 else 
-                      if CdDesligamento = 11 then 20 else 
-                      if CdDesligamento = 12 then 21 else 
-                      if CdDesligamento = 13 then 22 else 
-                      if CdDesligamento = 14 then 23 else 
-                      if CdDesligamento = 15 then 15 endif endif endif endif endif endif endif endif endif endif endif endif endif endif endif
+set i_motivos_resc = case 
+                      when CdDesligamento = 1 then 2 
+                      when CdDesligamento = 2 then 1  
+                      when CdDesligamento = 3 then 16 
+                      when CdDesligamento = 4 then 7  
+                      when CdDesligamento = 5 then 4  
+                      when CdDesligamento = 6 then 17 
+                      when CdDesligamento = 7 then 12 
+                      when CdDesligamento = 8 then 18 
+                      when CdDesligamento = 9 then 19 
+                      when CdDesligamento = 10 then 8 
+                      when CdDesligamento = 11 then 20 
+                      when CdDesligamento = 12 then 21 
+                      when CdDesligamento = 13 then 22 
+                      when CdDesligamento = 14 then 23 
+                      when CdDesligamento = 15 then 15 
+                      else i_motivos_resc
+                    end
 where i_motivos_resc is null;
 commit
 ;
