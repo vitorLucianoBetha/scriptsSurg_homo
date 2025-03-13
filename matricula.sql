@@ -382,3 +382,92 @@ begin
 		end if;
 	end for;
 end; 
+
+
+--- INSERE FUNCIONARIOS DE INSTITUIDORES DOS PENSIONISTAS PARA POSTERIORMENTE SEREM VINCULADOS AOS PENSIONISTAS CORRETAMENTE
+ROLLBACK;
+CALL bethadba.dbp_conn_gera(1, 2019, 300);
+CALL bethadba.pg_setoption('wait_for_commit', 'on');
+CALL bethadba.pg_habilitartriggers('off');
+call bethadba.pg_setoption('fire_triggers','off');	
+COMMIT;
+
+
+if  exists (select 1 from sys.sysprocedure where creator = (select user_id from sys.sysuserperms where user_name = current user) and proc_name = 'cnv_funcionarios') then
+	drop procedure cnv_funcionarios;
+end if
+;
+
+begin
+	// **** Funcionarios
+	declare w_i_funcionarios integer;
+	declare w_dv tinyint;
+	declare w_tipo_admissao char(1);
+	declare w_conta_fgts char(12);
+	declare w_contrib_sindical char(1);
+	declare w_i_sindicatos integer;
+	declare w_tipo_func char(1);
+	
+	// **** Pessoas Contas
+	declare w_i_pessoas_contas integer;
+	declare w_num_conta char(15);
+	declare w_tipo_conta char(1);
+	declare w_status char(1);
+	declare w_provimento integer;
+	declare w_conselheiro char(1);
+	
+	ooLoop: for oo as cnv_funcionarios dynamic scroll cursor for
+		select 1 as w_i_entidades,			
+				(select p.i_pessoas from bethadba.pessoas p where trim(p.nome) like a.DS_NOME) as w_i_pessoas,
+				f.dt_admissao as w_dt_admissao,
+				f.i_funcionarios as w_matricula_pensionista
+		from tecbth_delivery.gp001_TCSC_INSTITUIDOR_PENSAO a
+		join bethadba.funcionarios f on a.CD_MATRICULA = f.i_funcionarios 
+		where w_i_pessoas is not null and w_matricula_pensionista <> 78
+		order by 1 asc
+	do
+
+		// *****  Inicializa Variaveis
+		set w_i_funcionarios=null;
+		set w_dv=null;
+		set w_conselheiro='N';
+		
+		// *****  Converte tabela bethadba.funcionarios
+		-- BUG BTHSC-6292
+		--bug BTHSC-7932
+		select max(i_funcionarios) + 1 into w_i_funcionarios from bethadba.funcionarios f;
+		set w_dv=bethadba.dbf_calcmod11(w_i_funcionarios);
+		set w_tipo_admissao= 1;
+		set w_conta_fgts=null;
+		set w_contrib_sindical='N';
+		set w_i_sindicatos=null;
+		set w_tipo_func='F';
+		
+		
+		if w_i_pessoas != 0 then
+			message 'Ent.: '||w_i_entidades||' Fun.: '||w_i_funcionarios||' Pes.: '||w_i_pessoas||' Adm.: '||w_dt_admissao to client;
+			insert into bethadba.funcionarios(i_entidades,i_funcionarios,dv,i_pessoas,dt_admissao,tipo_admissao,categoria,dt_opcao_fgts,conta_fgts,dt_base,contrib_sindical,i_sindicatos,conta_vaga,
+											sai_rais,tipo_func,tipo_pens,conta_adicional,conta_licpremio,conta_temposerv,lei_contrato,codigo_esocial,tipo_provimento,conselheiro_tutelar)on existing skip
+			values (w_i_entidades,w_i_funcionarios,w_dv,w_i_pessoas,w_dt_admissao,w_tipo_admissao,'M',null,w_conta_fgts,w_dt_admissao,w_contrib_sindical,w_i_sindicatos,'S',
+					'N',w_tipo_func,null,'N','N','N',null,null,null,w_conselheiro);
+				
+			update bethadba.beneficiarios set i_instituidor = w_i_funcionarios where i_funcionarios = w_matricula_pensionista;
+		
+			insert into bethadba.rescisoes(i_entidades,i_funcionarios,i_rescisoes,i_motivos_resc,dt_rescisao,aviso_ind,vlr_saldo_fgts,fgts_mesant,compl_mensal,complementar,trab_dia_resc,proc_adm,deb_adm_pub,tipo_decisao,mensal,repor_vaga,aviso_desc,dt_chave_esocial) on existing skip
+			values(w_i_entidades,w_i_funcionarios,1,9,w_dt_admissao,'N',0,'N','N','N','N','N','N','J','N','N','N',w_dt_admissao);
+		
+			insert into bethadba.afastamentos(i_entidades,i_funcionarios,dt_afastamento,i_tipos_afast,manual,desconsidera_rotina_prorrogacao,desconsidera_rotina_rodada,parecer_interno,conversao_fim_mp_664_2014,retificacao) on existing skip
+			values(w_i_entidades,w_i_funcionarios,w_dt_admissao,18,'N','N','N','N','N','N');
+		
+			INSERT INTO hist_funcionarios (i_entidades, i_funcionarios, dt_alteracoes, i_config_organ, i_organogramas, i_grupos, i_vinculos, i_pessoas, i_bancos, i_agencias, i_pessoas_contas, i_horarios, func_princ, i_agentes_nocivos, optante_fgts, prev_federal, prev_estadual, fundo_ass, fundo_prev, ocorrencia_sefip, forma_pagto, multiplic, i_turmas, num_quadro_cp, num_cp, provisorio, bate_cartao, tipo_contrato, i_responsaveis, fundo_financ, i_pessoas_estagio, dt_final_estagio, nivel_curso_estagio, num_apolice_estagio, estagio_obrigatorio_estagio, i_agente_integracao_estagio, i_supervisor_estagio, controle_jornada, grau_exposicao, tipo_admissao, tipo_trabalhador, i_sindicatos, seguro_vida_estagio, aposentado, categoria, desc_salario_variavel, tipo_ingresso, remunerado_cargo_efetivo, duracao_ben, dt_vencto, tipo_beneficio, recebe_abono, valor_beneficio, cnpj_entidade_qualificadora, contratacao_aprendiz) on existing skip 
+			VALUES(w_i_entidades, w_i_funcionarios, w_dt_admissao, 1, '10000201', 1, 2, w_i_pessoas, NULL, NULL, NULL, NULL, NULL, NULL, 'N', 'N', 'N', 'N', 'S', 1, 'D', 1.00, NULL, NULL, NULL, NULL, 'N', NULL, NULL, 'N', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'M', NULL, NULL, NULL, 'V', NULL, NULL, 'N', NULL, NULL, NULL);
+		
+			INSERT INTO hist_salariais (i_entidades, i_funcionarios, dt_alteracoes, i_niveis, i_clas_niveis, i_referencias, i_motivos_altsal, i_atos, salario, horas_mes, horas_sem, observacao, controla_jornada_parc, deduz_iss, aliq_iss, qtd_dias_servico, dt_alteracao_esocial, dt_chave_esocial) on existing skip
+			VALUES(w_i_entidades, w_i_funcionarios, w_dt_admissao, NULL, NULL, NULL, NULL, NULL, 0.01, 180.00, 36.00, NULL, NULL, NULL, NULL, NULL, NULL, w_dt_admissao);
+		
+			INSERT INTO hist_cargos (i_entidades, i_funcionarios, dt_alteracoes, dt_saida, i_cargos, i_motivos_altcar, i_atos, i_concursos, dt_nomeacao, dt_posse, i_atos_saida, parecer_contr_interno, afim, desconsidera_rotina_prorrogacao, desconsidera_rotina_rodada, dt_exercicio, reabilitado_readaptado) on existing skip
+			VALUES(w_i_entidades, w_i_funcionarios, w_dt_admissao, w_dt_admissao, 2, NULL, 60, NULL, NULL, w_dt_admissao, NULL, 'N', NULL, 'N', 'N', NULL, NULL);
+			
+		end if;
+	end for;
+end; 
