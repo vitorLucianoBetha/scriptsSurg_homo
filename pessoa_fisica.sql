@@ -517,6 +517,151 @@ begin
 end;
 
 
+--- PESSOA FISICA PARA OS INSTITUIDORES DOS PENSIONISTAS
+CALL bethadba.dbp_conn_gera(1, 2019, 300);
+CALL bethadba.pg_setoption('wait_for_commit', 'on');
+CALL bethadba.pg_habilitartriggers('off');
+COMMIT;
+
+rollback;
+begin
+	// *****  Tabela bethadba.pessoas
+	declare w_i_pessoas integer;
+	declare w_dv tinyint;	
+	declare w_tipo_pessoa char(1);
+	declare w_email char(60);
+	declare w_cpf char(11);
+	
+	// **** Pessoas Fisicas
+	declare w_i_cidades_nasc integer;
+	declare w_estado_civil char(1);
+	declare w_grau_instrucao tinyint;
+	declare w_nacionalidade char(1);
+	declare w_uf_emis_rg char(2);
+	declare w_uf_emis_carteira char(2);
+	
+	// **** Pessoas Fisicas Complemento
+	declare w_profissao_pai char(30);
+	declare w_profissao_mae char(30);
+	declare w_grupo_sanguineo char(2);
+	declare w_fator_rh char(1);
+	declare w_raca char(1);
+	declare w_sexo char(1);
+	declare w_deficiencia_fisica char(1);
+	declare w_grau_invalidez char(1);
+	declare w_num_reg char(25);
+	// **** Pessoas Endereços
+	declare w_i_cidades integer;
+	declare w_i_ruas integer;
+	declare w_i_bairros integer;
+     //aux
+    declare w_valida_cpf integer; 
+    declare w_valida_Pis integer;
+    declare w_dt_alteracoes date;
+	ooLoop: for oo as cnv_pessoas dynamic scroll cursor for
+		select 1 as w_i_entidades,
+			(select p.i_pessoas from bethadba.pessoas p where trim(p.nome) like a.DS_NOME) as pessoaInst,
+			cast(a.NR_CPF as varchar(11)) as w_NrCpf,
+			a.DS_NOME as w_nome,
+			(select date(DATEADD(YEAR, -18, b.DtAdmissao)) from tecbth_delivery.gp001_FUNCIONARIO b where a.CD_MATRICULA = b.cdMatricula) as w_dt_nascimento,
+			cast(cast(a.CD_MATRICULA as varchar(10)) || cast(a.SQ_CONTRATO as varchar(10)) as int) as w_CdPessoa
+		from tecbth_delivery.gp001_TCSC_INSTITUIDOR_PENSAO a
+		join bethadba.funcionarios f on a.CD_MATRICULA = f.i_funcionarios 
+		where pessoaInst is null
+		order by 1 asc
+	do
+		// *****  Tabela bethadba.pessoas
+        set w_valida_cpf = null; 
+        set w_valida_Pis = null;
+		set w_i_pessoas = null;
+		set w_dv = null;	
+		set w_tipo_pessoa = null;
+		set w_email = null;
+		set w_cpf = null;
+        set w_dt_alteracoes = null;
+
+		// **** Pessoas Fisicas
+		set w_i_cidades_nasc = null;
+		set w_estado_civil = null;
+		set w_grau_instrucao = null;
+		set w_nacionalidade = null;
+		set w_uf_emis_rg = null;
+		set w_uf_emis_carteira = null;
+		
+		// **** Pessoas Fisicas Complemento
+		set w_profissao_pai = null;
+		set w_profissao_mae = null;
+		set w_grupo_sanguineo = null;
+		set w_fator_rh = null;
+		set w_raca = null;
+		set w_deficiencia_fisica = null;
+		set w_grau_invalidez = null;
+		set w_num_reg = null;
+		
+		// **** Pessoas Endereços
+		set w_i_cidades = null;
+		set w_i_ruas = null;
+		set w_i_bairros = null;
+		set w_valida_cpf = null; 
+        set w_valida_Pis = null;
+        if length(cast(w_NrCpf as decimal(15))) < 11 then
+			set w_cpf=repeat('0',11-length(cast(w_NrCpf as decimal(15))))+string(cast(w_NrCpf as decimal(15)))
+		else
+			set w_cpf=cast(w_NrCpf as decimal(15))
+		end if;
+        set w_valida_cpf = bethadba.dbf_chk_cnpj_cpf (null,w_cpf,'F');
+		// *****  Converte tabela bethadba.pessoas
+		/*if w_InDependente != 0 then
+			set w_tipo_pessoa='O'*/
+        if w_valida_cpf =1 then  
+          set w_tipo_pessoa='F'
+        else
+          set w_tipo_pessoa='O';
+          set w_cpf = null
+        end if;
+			
+		select coalesce(max(i_pessoas),0)+1 
+		into w_i_pessoas 
+		from bethadba.pessoas;
+		--set w_i_pessoas = w_CdPessoa; 
+		
+		set w_dv=bethadba.dbf_calcmod11(w_i_pessoas);
+		
+		message 'Pes.: '||w_i_pessoas||' Dv.: '||w_dv||' Nom.: '||w_nome||' Tip.: '||w_tipo_pessoa to client;
+		
+        if w_dt_nascimento is null then
+          set w_dt_alteracoes = (select min(dtadmissao) from gp001_funcionario where cdpessoa = w_CdPessoa);
+        else
+          set w_dt_alteracoes = w_dt_nascimento;
+        end if;
+        if w_dt_alteracoes is null then
+          set w_dt_alteracoes = '1900-01-01';
+        end if;
+		
+		insert into bethadba.pessoas(i_pessoas,dv,nome,nome_fantasia,tipo_pessoa,ddd,telefone,fax,ddd_cel,celular,inscricao_municipal,email)/*on existing skip*/
+		values (w_i_pessoas,w_dv,w_nome,null,w_tipo_pessoa,null,null,null,null,null,null,null);
+		
+		message 'Pes.: '||w_i_pessoas||' Dt.: '||w_dt_nascimento||' Nom.: '||w_nome to client;
+		
+		insert into bethadba.pessoas_nomes(i_pessoas,dt_alteracoes,nome,documento)/*on existing skip*/ values (w_i_pessoas,w_dt_alteracoes,w_nome,null);
+		
+		insert into tecbth_delivery.antes_depois values('P',w_i_entidades,w_CdPessoa,null,null,w_i_pessoas,null,null,null,null,null,null,null,null);
+		--select * from tecbth_delivery.antes_depois
+		// *****  Converte tabela bethadba.pessoas_fisicas
+			set w_i_cidades_nasc=null;
+			set w_sexo='M';
+			set w_estado_civil=1;
+		
+		message 'Pes.: '||w_i_pessoas||' Nas.: '||w_dt_nascimento||' Sex.: '||w_sexo||' Nas.: '||w_nacionalidade||' CPF: '||w_cpf to client;
+		
+		insert into bethadba.pessoas_fisicas(i_pessoas,i_cidades,dt_nascimento,sexo,estado_civil,grau_instrucao,nacionalidade,rg,orgao_emis_rg,dt_emis_rg,uf_emis_rg,num_pis,dt_pis,cpf,
+											 carteira_prof,serie_cart,dt_emis_carteira,uf_emis_carteira) on existing skip 
+		values(w_i_pessoas,w_i_cidades_nasc,w_dt_nascimento,w_sexo,w_estado_civil,w_grau_instrucao,w_nacionalidade,null,null,null,null,null,null,w_cpf,
+			   null,null,null,null);
+	end for
+end;
+
+
 /*
 
 
