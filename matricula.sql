@@ -471,3 +471,19 @@ begin
 		end if;
 	end for;
 end; 
+
+-- insere dependentes dos pensionistas
+insert into bethadba.dependentes on existing skip
+select (select first f2.i_pessoas from bethadba.funcionarios f2 where f2.i_funcionarios = b.i_instituidor) instituidorPessoa,
+		f.i_pessoas as pensionistaPessoa,
+		10,
+		null,
+		f.dt_admissao,
+		0,
+		null,
+		null,
+		null,
+		null
+from bethadba.beneficiarios b
+join bethadba.funcionarios f on b.i_funcionarios = f.i_funcionarios
+where not exists(select first 1 from bethadba.dependentes d where d.i_pessoas = instituidorPessoa and d.i_dependentes = pensionistaPessoa)
